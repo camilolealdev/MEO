@@ -5,14 +5,10 @@ import { DrizzleAdapter } from "@auth/drizzle-adapter";
 import { db } from "./db";
 import { users, accounts, sessions, verificationTokens } from "./schema";
 import { eq } from "drizzle-orm";
+import { authConfig } from "../auth.config";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: DrizzleAdapter(db, {
-    usersTable: users as any,
-    accountsTable: accounts as any,
-    sessionsTable: sessions as any,
-    verificationTokensTable: verificationTokens as any,
-  }),
+  ...authConfig,
   providers: [
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID!,
@@ -22,21 +18,31 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       from: "MEO <noreply@meo.com>",
     }),
   ],
+  adapter: DrizzleAdapter(db, {
+    usersTable: users as any,
+    accountsTable: accounts as any,
+    sessionsTable: sessions as any,
+    verificationTokensTable: verificationTokens as any,
+  }),
   callbacks: {
-    async session({ session, user }) {
-      if (session.user) {
+    async jwt({ token, user }) {
+      if (user) {
         const dbUser = await db.query.users.findFirst({
-          where: eq(users.id, user.id),
+          where: eq(users.id, user.id!),
         });
-        session.user.id = user.id;
-        session.user.tier = dbUser?.tier ?? "free";
-        session.user.role = dbUser?.role ?? "user";
+        token.id = user.id;
+        token.tier = dbUser?.tier ?? "free";
+        token.role = dbUser?.role ?? "user";
+      }
+      return token;
+    },
+    session({ session, token }) {
+      if (session.user) {
+        session.user.id = token.id as string;
+        (session.user as any).tier = (token as any).tier ?? "free";
+        (session.user as any).role = (token as any).role ?? "user";
       }
       return session;
     },
-  },
-  pages: {
-    signIn: "/login",
-    newUser: "/onboarding",
   },
 });
