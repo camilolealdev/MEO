@@ -15,7 +15,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
     Resend({
-      from: "MEO <noreply@meo.com>",
+      apiKey: process.env.RESEND_API_KEY,
+      from: "onboarding@resend.dev",
     }),
   ],
   adapter: DrizzleAdapter(db, {
