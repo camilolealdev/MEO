@@ -1,26 +1,73 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  /* MEO Color Palette */
+  --color-violet-600: #7C3AED;
+  --color-violet-700: #6D28D9;
+  --color-violet-50: #F5F3FF;
+  --color-violet-200: #DDD6FE;
+  --color-violet-300: #C4B5FD;
+  --color-cyan-500: #06B6D4;
+  --color-cyan-600: #0891B2;
+  --color-cyan-200: #A5F3FC;
+  --color-lime-400: #84CC16;
+  --color-lime-500: #65A30D;
+  --color-lime-50: #F7FEE7;
+  --color-lime-200: #D9F99D;
+  --color-lime-600: #4D7C0F;
+
+  /* Fonts */
+  --font-sans: var(--font-inter), sans-serif;
+  --font-display: var(--font-cal), sans-serif;
+  --font-mono: var(--font-jetbrains), monospace;
+
+  /* Gradients */
+  --background-image-gradient-meo: linear-gradient(135deg, #7C3AED, #06B6D4, #84CC16);
+  --background-image-gradient-meo-text: linear-gradient(90deg, #7C3AED, #06B6D4);
+
+  /* Animations */
+  --animate-gradient-x: gradient-x 8s ease infinite;
+  --animate-fade-in-up: fade-in-up 0.6s ease forwards;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes gradient-x {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@keyframes fade-in-up {
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
+}
+
+@layer base {
+  body {
+    @apply bg-white text-gray-900 antialiased;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer utilities {
+  .gradient-text {
+    background: var(--background-image-gradient-meo-text);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .card-glass {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(4px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+  }
+
+  .tier-gradient-border {
+    background: linear-gradient(white, white) padding-box,
+      linear-gradient(135deg, #7C3AED, #06B6D4, #84CC16) border-box;
+    border: 2px solid transparent;
+  }
+
+  .bg-gradient-meo {
+    background: linear-gradient(135deg, #7C3AED, #06B6D4, #84CC16);
+  }
 }
