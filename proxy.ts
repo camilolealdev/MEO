@@ -37,5 +37,7 @@ export default auth((req: NextAuthRequest) => {
 });
 
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico|fonts).*)"],
+  matcher: [
+    "/((?!_next/static|_next/image|favicon.ico|fonts|robots\\.txt|sitemap\\.xml).*)",
+  ],
 };
