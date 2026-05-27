@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import { PricingCard, type Plan } from "@/components/marketing/PricingCard";
@@ -56,24 +57,59 @@ const PLANS: Plan[] = [
   },
 ];
 
+type Provider = "stripe" | "mercadopago" | "paypal";
+
+const PROVIDERS: { id: Provider; label: string; icon: string }[] = [
+  { id: "stripe", label: "Stripe", icon: "💳" },
+  { id: "mercadopago", label: "MercadoPago", icon: "🏦" },
+  { id: "paypal", label: "PayPal", icon: "🅿" },
+];
+
 export default function PreciosPage() {
   const { data: session } = useSession();
   const router = useRouter();
+  const [provider, setProvider] = useState<Provider>("stripe");
+  const [loading, setLoading] = useState(false);
 
   async function handleUpgrade(priceId: string) {
     if (!session) { router.push("/register?redirect=/precios"); return; }
-    const res = await fetch("/api/stripe/checkout", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ priceId }),
-    });
-    const { url } = await res.json();
-    if (url) window.location.href = url;
+    if (loading) return;
+
+    setLoading(true);
+    try {
+      let endpoint = "";
+      let body: Record<string, string> = {};
+
+      // Determine tier from priceId by matching against PLANS
+      const plan = PLANS.find((p) => p.priceId === priceId);
+      const tier = plan?.tier ?? "pro";
+
+      if (provider === "stripe") {
+        endpoint = "/api/stripe/checkout";
+        body = { priceId };
+      } else if (provider === "mercadopago") {
+        endpoint = "/api/mercadopago/checkout";
+        body = { tier };
+      } else {
+        endpoint = "/api/paypal/checkout";
+        body = { tier };
+      }
+
+      const res = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      const { url } = await res.json();
+      if (url) window.location.href = url;
+    } finally {
+      setLoading(false);
+    }
   }
 
   return (
     <div className="max-w-6xl mx-auto px-6 py-24">
-      <div className="text-center mb-16">
+      <div className="text-center mb-12">
         <h1 className="font-display font-bold text-5xl text-gray-900 mb-4">
           Elige tu <span className="gradient-text">nivel MEO</span>
         </h1>
@@ -81,13 +117,45 @@ export default function PreciosPage() {
           Desde explorar los fundamentos hasta dominar los 116 frameworks.
         </p>
       </div>
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
-        {PLANS.map((plan, i) => (
-          <PricingCard key={plan.tier} plan={plan} index={i} onUpgrade={handleUpgrade} />
+
+      {/* Payment method selector */}
+      <div className="flex justify-center gap-3 mb-12">
+        <p className="text-sm text-gray-500 self-center mr-2">Pagar con:</p>
+        {PROVIDERS.map((p) => (
+          <button
+            key={p.id}
+            onClick={() => setProvider(p.id)}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-all border ${
+              provider === p.id
+                ? "bg-violet-600 text-white border-violet-600 shadow-md"
+                : "bg-white text-gray-600 border-gray-200 hover:border-violet-300"
+            }`}
+          >
+            {p.icon} {p.label}
+          </button>
         ))}
       </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
+        {PLANS.map((plan, i) => (
+          <PricingCard
+            key={plan.tier}
+            plan={plan}
+            index={i}
+            onUpgrade={handleUpgrade}
+          />
+        ))}
+      </div>
+
       <p className="text-center text-gray-400 text-sm mt-8">
-        Cancela cuando quieras. Sin permanencia. Pago seguro con Stripe.
+        Cancela cuando quieras. Sin permanencia.{" "}
+        Pago seguro con{" "}
+        {provider === "stripe"
+          ? "Stripe"
+          : provider === "mercadopago"
+          ? "MercadoPago"
+          : "PayPal"}
+        .
       </p>
     </div>
   );
