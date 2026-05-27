@@ -6,6 +6,7 @@ import type { NextAuthRequest } from "next-auth";
 const { auth } = NextAuth(authConfig);
 
 const PUBLIC_PATHS = ["/", "/curso", "/precios", "/login", "/register"];
+const ADMIN_PATH = /^\/admin/;
 
 export default auth((req: NextAuthRequest) => {
   const { nextUrl } = req;
@@ -25,6 +26,11 @@ export default auth((req: NextAuthRequest) => {
     return NextResponse.redirect(
       new URL(`/login?callbackUrl=${encodeURIComponent(path)}`, req.url)
     );
+  }
+
+  // Defense-in-depth: admin role stored in JWT at sign-in via lib/auth.ts jwt callback
+  if (ADMIN_PATH.test(path) && (session.user as any)?.role !== "admin") {
+    return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
   return NextResponse.next();
