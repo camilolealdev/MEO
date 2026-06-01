@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, primaryKey } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, primaryKey, uniqueIndex } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -6,6 +6,7 @@ export const users = pgTable("users", {
   email: text("email").notNull().unique(),
   emailVerified: timestamp("email_verified", { mode: "date" }),
   image: text("image"),
+  passwordHash: text("password_hash"),
   stripeCustomerId: text("stripe_customer_id"),
   tier: text("tier").$type<"free" | "pro" | "agency">().notNull().default("free"),
   role: text("role").$type<"user" | "admin">().notNull().default("user"),
@@ -63,7 +64,7 @@ export const progress = pgTable("progress", {
   frameworkSlug: text("framework_slug").notNull(),
   completedAt: timestamp("completed_at").notNull().defaultNow(),
   timeSpentSeconds: integer("time_spent_seconds").notNull().default(0),
-});
+}, (t) => [uniqueIndex("progress_user_slug_idx").on(t.userId, t.frameworkSlug)]);
 
 export const pathEnrollments = pgTable("path_enrollments", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),

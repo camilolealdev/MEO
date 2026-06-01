@@ -42,3 +42,16 @@ next-env.d.ts
 
 # local sqlite placeholder
 *.db
+
+.vercel
+
+# agent config dirs
+.codex/
+.cursor/
+.gemini/
+.zed/
+.vscode/
+.mcp.json
+opencode.json
+config/
+nul

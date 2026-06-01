@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { LayoutDashboard, BookOpen, TrendingUp, LogOut } from "lucide-react";
+import { LayoutDashboard, BookOpen, TrendingUp, Shield, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
@@ -31,6 +31,13 @@ export function Sidebar() {
             </Link>
           );
         })}
+        {(session?.user as any)?.role === "admin" && (
+          <Link href="/admin"
+            className={cn("flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all",
+              pathname.startsWith("/admin") ? "bg-violet-50 text-violet-700" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900")}>
+            <Shield className="w-4 h-4" />Admin
+          </Link>
+        )}
       </nav>
       <div className="p-4 border-t border-gray-100">
         <div className="flex items-center gap-3 px-4 py-2 mb-2">

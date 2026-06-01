@@ -16,9 +16,9 @@ export default auth((req: NextAuthRequest) => {
   const isPublic =
     PUBLIC_PATHS.some((p) => path === p) ||
     path.startsWith("/api/auth") ||
-    path.startsWith("/api/stripe") ||
-    path.startsWith("/api/mercadopago") ||
-    path.startsWith("/api/paypal");
+    path.startsWith("/api/stripe/webhook") ||
+    path.startsWith("/api/mercadopago/webhook") ||
+    path.startsWith("/api/paypal/webhook");
 
   if (isPublic) return NextResponse.next();
 

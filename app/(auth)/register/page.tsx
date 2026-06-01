@@ -2,15 +2,67 @@
 import { signIn } from "next-auth/react";
 import { useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function RegisterPage() {
+  const router = useRouter();
   const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [sent, setSent] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const [tab, setTab] = useState<"password" | "magic">("password");
 
-  async function handleEmailSignIn(e: React.FormEvent) {
+  async function handlePasswordRegister(e: React.FormEvent) {
     e.preventDefault();
-    await signIn("resend", { email, redirect: false, callbackUrl: "/onboarding" });
-    setSent(true);
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/auth/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password, name }),
+      });
+      if (!res.ok) {
+        const data = await res.json();
+        setError(data.error || "Error al crear cuenta.");
+        return;
+      }
+      const result = await signIn("credentials", {
+        email,
+        password,
+        redirect: false,
+      });
+      if (result?.error) {
+        setError("Cuenta creada. Intenta iniciar sesión.");
+        return;
+      }
+      router.push("/onboarding");
+      router.refresh();
+    } catch {
+      setError("Error de conexión. Intenta de nuevo.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  async function handleMagicLinkSignIn(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
+    try {
+      const result = await signIn("resend", { email, redirect: false, callbackUrl: "/onboarding" });
+      if (result?.error) {
+        setError("Error al enviar el enlace. Verifica tu email e intenta de nuevo.");
+        return;
+      }
+      setSent(true);
+    } catch {
+      setError("Error de conexión. Intenta de nuevo.");
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (sent) {
@@ -27,6 +79,22 @@ export default function RegisterPage() {
     <div className="bg-white rounded-2xl p-8 shadow-sm border border-gray-100">
       <h1 className="font-display font-bold text-2xl text-gray-900 mb-1">Empieza gratis</h1>
       <p className="text-gray-500 text-sm mb-6">Accede a los 8 frameworks core MEO sin costo.</p>
+
+      <div className="flex gap-2 mb-6 bg-gray-50 p-1 rounded-xl">
+        <button
+          onClick={() => setTab("password")}
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${tab === "password" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+        >
+          Contraseña
+        </button>
+        <button
+          onClick={() => setTab("magic")}
+          className={`flex-1 py-2 text-sm font-medium rounded-lg transition-all ${tab === "magic" ? "bg-white shadow-sm text-gray-900" : "text-gray-500 hover:text-gray-700"}`}
+        >
+          Magic Link
+        </button>
+      </div>
+
       <button onClick={() => signIn("google", { callbackUrl: "/onboarding" })}
         className="w-full flex items-center justify-center gap-3 py-3 rounded-xl border-2 border-gray-200 font-medium text-gray-700 hover:border-gray-300 transition-all mb-6">
         <svg className="w-5 h-5" viewBox="0 0 24 24">
@@ -37,17 +105,47 @@ export default function RegisterPage() {
         </svg>
         Registrarse con Google
       </button>
+
       <div className="relative mb-6">
         <div className="absolute inset-0 flex items-center"><div className="w-full border-t border-gray-100" /></div>
         <div className="relative flex justify-center"><span className="px-4 bg-white text-xs text-gray-400">o con email</span></div>
       </div>
-      <form onSubmit={handleEmailSignIn} className="space-y-4">
-        <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="tu@email.com" required
-          className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-violet-400" />
-        <button type="submit" className="w-full py-3 rounded-xl bg-gradient-meo text-white font-bold hover:opacity-90">
-          Crear cuenta gratis
-        </button>
-      </form>
+
+      {tab === "password" ? (
+        <form onSubmit={handlePasswordRegister} className="space-y-4">
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Nombre</label>
+            <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Tu nombre" required
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-violet-400" />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Email</label>
+            <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="tu@email.com" required
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-violet-400" />
+          </div>
+          <div>
+            <label className="block text-sm text-gray-600 mb-1">Contraseña</label>
+            <input type="password" value={password} onChange={e => setPassword(e.target.value)} placeholder="Mínimo 8 caracteres" required minLength={8}
+              className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-violet-400" />
+          </div>
+          {error && <p className="text-red-500 text-xs">{error}</p>}
+          <button type="submit" disabled={loading}
+            className="w-full py-3 rounded-xl bg-gradient-meo text-white font-bold hover:opacity-90 disabled:opacity-50">
+            {loading ? "Creando cuenta..." : "Crear cuenta"}
+          </button>
+        </form>
+      ) : (
+        <form onSubmit={handleMagicLinkSignIn} className="space-y-4">
+          <input type="email" value={email} onChange={e => setEmail(e.target.value)} placeholder="tu@email.com" required
+            className="w-full px-4 py-3 rounded-xl border border-gray-200 text-sm focus:outline-none focus:border-violet-400" />
+          {error && <p className="text-red-500 text-xs">{error}</p>}
+          <button type="submit" disabled={loading}
+            className="w-full py-3 rounded-xl bg-gradient-meo text-white font-bold hover:opacity-90 disabled:opacity-50">
+            {loading ? "Enviando..." : "Crear cuenta gratis"}
+          </button>
+        </form>
+      )}
+
       <p className="text-center text-sm text-gray-400 mt-6">
         ¿Ya tienes cuenta?{" "}
         <Link href="/login" className="text-violet-600 font-medium hover:underline">Iniciar sesión</Link>

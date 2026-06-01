@@ -5,6 +5,19 @@ import { progress } from "@/lib/schema";
 import { eq, and } from "drizzle-orm";
 import { nanoid } from "nanoid";
 
+export async function GET() {
+  const session = await auth();
+  if (!session?.user?.id) {
+    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  const rows = await db.query.progress.findMany({
+    where: eq(progress.userId, session.user.id),
+  });
+
+  return NextResponse.json({ progress: rows });
+}
+
 export async function POST(req: NextRequest) {
   const session = await auth();
   if (!session?.user?.id) {
