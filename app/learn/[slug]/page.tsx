@@ -1,13 +1,10 @@
 import { auth } from "@/lib/auth";
 import { getFrameworkBySlug, getAllFrameworks } from "@/lib/content";
 import { notFound } from "next/navigation";
-import { TierGate } from "@/components/ui/TierGate";
 import { MarkCompleteButton } from "@/components/ui/MarkCompleteButton";
 import { MDXRemote } from "next-mdx-remote/rsc";
 import { Clock, Hash } from "lucide-react";
 import type { Metadata } from "next";
-
-const TIER_ORDER = { free: 0, pro: 1, agency: 2 } as const;
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -33,9 +30,6 @@ export default async function FrameworkPage({ params }: Props) {
   const fw = getFrameworkBySlug(slug);
   if (!fw) notFound();
 
-  const userTier = ((session?.user as any)?.tier ?? "free") as "free" | "pro" | "agency";
-  const isLocked = TIER_ORDER[userTier] < TIER_ORDER[fw.tier as keyof typeof TIER_ORDER];
-
   return (
     <div className="min-h-screen">
       <div className="border-b border-gray-100 bg-white sticky top-0 z-10">
@@ -50,22 +44,14 @@ export default async function FrameworkPage({ params }: Props) {
             <span className="flex items-center gap-1">
               <Clock className="w-3.5 h-3.5" />{fw.estimatedMinutes} min
             </span>
-            {session && !isLocked && <MarkCompleteButton slug={fw.slug} />}
+            {session && <MarkCompleteButton slug={fw.slug} />}
           </div>
         </div>
       </div>
       <div className="max-w-4xl mx-auto px-6 py-12">
-        {isLocked ? (
-          <TierGate requiredTier={fw.tier as "pro" | "agency"}>
-            <div className="prose prose-lg max-w-none h-64 overflow-hidden">
-              <p>{fw.content.substring(0, 500)}...</p>
-            </div>
-          </TierGate>
-        ) : (
-          <article className="prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-violet-600">
-            <MDXRemote source={fw.content} />
-          </article>
-        )}
+        <article className="prose prose-lg max-w-none prose-headings:font-display prose-headings:font-bold prose-a:text-violet-600">
+          <MDXRemote source={fw.content} />
+        </article>
       </div>
     </div>
   );
