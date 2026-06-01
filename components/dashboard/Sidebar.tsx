@@ -2,12 +2,13 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
-import { LayoutDashboard, BookOpen, TrendingUp, Shield, LogOut } from "lucide-react";
+import { LayoutDashboard, BookOpen, Map, TrendingUp, Shield, LogOut } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/dashboard", icon: LayoutDashboard, label: "Dashboard" },
-  { href: "/mi-ruta", icon: BookOpen, label: "Mi Ruta" },
+  { href: "/aprender", icon: BookOpen, label: "Explorar" },
+  { href: "/mi-ruta", icon: Map, label: "Rutas" },
   { href: "/progreso", icon: TrendingUp, label: "Progreso" },
 ];
 
