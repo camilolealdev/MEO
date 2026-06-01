@@ -13,7 +13,7 @@ Plataforma de aprendizaje para profesionales de marketing digital. Contiene **11
 |------|-----------|
 | Framework | Next.js 16.2.6 (App Router + Turbopack) |
 | Lenguaje | TypeScript 5 |
-| Autenticación | NextAuth v5 (beta.31) — JWT strategy |
+| Autenticación | NextAuth v5 (beta.31) — JWT strategy + Credentials provider |
 | Base de datos | Neon PostgreSQL (serverless) |
 | ORM | Drizzle ORM 0.45 |
 | Estilos | Tailwind CSS v4 |
@@ -36,6 +36,7 @@ meo-platform/
 │   │   └── onboarding/page.tsx
 │   ├── (dashboard)/                # Rutas protegidas de usuario (layout propio)
 │   │   ├── dashboard/page.tsx
+│   │   ├── aprender/page.tsx
 │   │   ├── mi-ruta/page.tsx
 │   │   └── progreso/page.tsx
 │   ├── (marketing)/                # Páginas públicas (layout propio)
@@ -117,6 +118,7 @@ meo-platform/
 | name | text | |
 | email | text | UNIQUE NOT NULL |
 | emailVerified | timestamp | NextAuth email verification |
+| passwordHash | text | bcrypt hash (credenciales) |
 | image | text | URL foto de perfil |
 | stripeCustomerId | text | Para Stripe Billing |
 | tier | text | `"free"` · `"pro"` · `"agency"` · default `"free"` |
@@ -216,7 +218,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
 
 ```
 Usuario → /login
-  ├── Google OAuth → callback → /onboarding (primer login) o /dashboard
+  ├── Credentials (email + password) → JWT → /dashboard
+  ├── Google OAuth → callback → /onboarding o /dashboard
   └── Email (Resend) → magic link → /login?token=... → /dashboard
 
 /onboarding → elige perfil → redirect /dashboard?path={slug}
@@ -226,8 +229,11 @@ Usuario → /login
 
 | Provider | Variables requeridas |
 |----------|---------------------|
+| Credentials (email + password) | Ninguna (usa `AUTH_SECRET` para JWT) |
 | Google OAuth | `GOOGLE_CLIENT_ID`, `GOOGLE_CLIENT_SECRET` |
 | Resend (magic link) | `RESEND_API_KEY` |
+
+Los providers que no tengan sus variables de entorno configuradas se omiten automáticamente. Solo Credentials está siempre activo.
 
 **Google OAuth — configurar redirect URI:**
 En Google Cloud Console → Credentials → OAuth 2.0 Client, agregar:
@@ -297,6 +303,7 @@ Los frameworks se asignan por tier en el frontmatter MDX:
 |------|---------|-------------|
 | `/onboarding` | `app/(auth)/onboarding/page.tsx` | Selección de perfil tras primer login |
 | `/dashboard` | `app/(dashboard)/dashboard/page.tsx` | Panel principal, stats, primeros frameworks |
+| `/aprender` | `app/(dashboard)/aprender/page.tsx` | Los 116 frameworks con tier gating |
 | `/mi-ruta` | `app/(dashboard)/mi-ruta/page.tsx` | Las 6 rutas de aprendizaje |
 | `/progreso` | `app/(dashboard)/progreso/page.tsx` | Historial de progreso |
 
@@ -309,6 +316,22 @@ Los frameworks se asignan por tier en el frontmatter MDX:
 ---
 
 ## API Routes
+
+### `POST /api/auth/register`
+Registra un nuevo usuario con email y contraseña.
+
+**Auth:** Pública.
+
+**Body:**
+```json
+{ "email": "user@email.com", "password": "min6chars", "name": "Opcional" }
+```
+
+**Response:** `{ "success": true }`
+
+**Errors:** `400` (faltan campos), `409` (email ya registrado), `500` (error interno).
+
+---
 
 ### `POST /api/progress`
 Registra un framework como completado.
@@ -515,6 +538,34 @@ npm run dev
 ```
 
 Abre http://localhost:3000.
+
+### Credenciales del admin
+
+| Campo | Valor |
+|-------|-------|
+| Email | `master871017@meo.com` |
+| Contraseña | `Admin123!` |
+| Rol | `admin` |
+| Tier | `agency` (acceso completo a 116 frameworks) |
+
+### Scripts de utilidad
+
+| Script | Propósito |
+|--------|-----------|
+| `scripts/set-password.ts` | Setea password_hash para un usuario existente |
+| `scripts/seed-master.ts` | Crea el usuario master con tier=agency, role=admin |
+| `scripts/apply-migration-0002.ts` | Aplica migración `password_hash` a Neon |
+
+```bash
+# Setear/actualizar contraseña del master
+npx tsx scripts/set-password.ts
+
+# Sembrar usuario master (si no existe)
+npx tsx scripts/seed-master.ts
+
+# Aplicar migración 0002 (columna password_hash)
+npx tsx scripts/apply-migration-0002.ts
+```
 
 ### Crear usuario admin (primera vez)
 
