@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { FrameworkMeta } from "@/lib/content";
-import { Clock } from "lucide-react";
+import { Clock, Lock } from "lucide-react";
 
 const TIER_COLORS = {
   free: "text-lime-600 bg-lime-50 border-lime-200",
@@ -27,6 +27,8 @@ interface FrameworkCardProps {
 }
 
 export function FrameworkCard({ framework, userTier, completed = false, index = 0 }: FrameworkCardProps) {
+  const isLocked = TIER_ORDER[userTier] < TIER_ORDER[framework.tier];
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -36,7 +38,8 @@ export function FrameworkCard({ framework, userTier, completed = false, index = 
       className={cn(
         "relative group rounded-xl p-5 border bg-white transition-all duration-200",
         "hover:shadow-lg hover:-translate-y-0.5",
-        completed && "tier-gradient-border"
+        completed && "tier-gradient-border",
+        isLocked && "opacity-60"
       )}
     >
       <div className="flex items-start justify-between mb-3">
@@ -62,12 +65,19 @@ export function FrameworkCard({ framework, userTier, completed = false, index = 
         </span>
         <span className="capitalize">{framework.category.replace(/-/g, " ")}</span>
       </div>
-      <Link
-        href={`/learn/${framework.slug}`}
-        className="mt-4 flex items-center gap-1 text-sm font-medium text-violet-600 hover:text-violet-700"
-      >
-        {completed ? "Repasar framework" : "Comenzar"} →
-      </Link>
+      {isLocked ? (
+        <div className="mt-4 flex items-center gap-2 text-sm text-gray-400">
+          <Lock className="w-4 h-4" />
+          <span>Requiere {TIER_LABELS[framework.tier]}</span>
+        </div>
+      ) : (
+        <Link
+          href={`/learn/${framework.slug}`}
+          className="mt-4 flex items-center gap-1 text-sm font-medium text-violet-600 hover:text-violet-700"
+        >
+          {completed ? "Repasar framework" : "Comenzar"} →
+        </Link>
+      )}
     </motion.div>
   );
 }

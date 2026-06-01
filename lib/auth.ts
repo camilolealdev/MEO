@@ -38,14 +38,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         };
       },
     }),
-    Google({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    Resend({
-      apiKey: process.env.RESEND_API_KEY,
-      from: process.env.EMAIL_FROM ?? "noreply@meo-platform.com",
-    }),
+    ...(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET
+      ? [Google({ clientId: process.env.GOOGLE_CLIENT_ID, clientSecret: process.env.GOOGLE_CLIENT_SECRET })]
+      : []),
+    ...(process.env.RESEND_API_KEY && !process.env.RESEND_API_KEY.startsWith("re_xxx")
+      ? [Resend({ apiKey: process.env.RESEND_API_KEY, from: process.env.EMAIL_FROM ?? "noreply@meo-platform.com" })]
+      : []),
   ],
   adapter: DrizzleAdapter(db, {
     usersTable: users as any,
@@ -55,11 +53,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   }),
   callbacks: {
     async jwt({ token, user, trigger }) {
+      if (user) token.id = user.id!;
       if (user || trigger === "update") {
         const dbUser = await db.query.users.findFirst({
           where: eq(users.id, token.id!),
         });
-        if (user) token.id = user.id!;
         token.tier = dbUser?.tier ?? "free";
         token.role = dbUser?.role ?? "user";
       }
