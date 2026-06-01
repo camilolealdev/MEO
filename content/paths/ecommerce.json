@@ -1,1 +1,25 @@
-{"slug":"ecommerce","name":"Ruta Ecommerce","description":"Optimiza cada punto del funnel de ventas online: captación, conversión, retención y expansión.","audience":"Dueños de tiendas online, growth marketers","color":"from-lime-400 to-violet-600","frameworks":["cro-conversion-rate-optimization","seo-search-engine-optimization","geo-geoposicionamiento-ia-local","aarrr-framework-pirate-metrics","purchase-decision-journey","customer-lifecycle-marketing","lead-generation-framework","content-marketing-funnel"]}
+{
+  "slug": "ecommerce",
+  "name": "Ruta Ecommerce",
+  "description": "Sistema para tiendas online: adquisicion, experiencia, conversion, retencion, personalizacion y decisiones de compra.",
+  "audience": "Ecommerce managers, founders DTC, equipos retail",
+  "color": "from-lime-400 to-violet-600",
+  "frameworks": [
+    "seo-search-engine-optimization",
+    "geo-geoposicionamiento-ia-local",
+    "sem-search-engine-marketing",
+    "uxo-user-experience-optimization",
+    "sxo-search-experience-optimization",
+    "aarrr-framework-pirate-metrics",
+    "cro-conversion-rate-optimization",
+    "customer-value-journey",
+    "content-marketing-funnel",
+    "4ps-marketing-classic-mix",
+    "purchase-decision-journey",
+    "customer-lifecycle-marketing",
+    "behavioral-segmentation-framework",
+    "mobile-first-marketing-framework",
+    "customer-retention-framework",
+    "personalization-at-scale"
+  ]
+}

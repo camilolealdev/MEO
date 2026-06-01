@@ -1,1 +1,23 @@
-{"slug":"startups","name":"Ruta Startups","description":"Frameworks de growth hacking, validación rápida y expansión viral para startups en etapa temprana.","audience":"Fundadores, product managers, growth hackers","color":"from-violet-600 to-lime-400","frameworks":["growth-hacking-framework","lean-canvas-model","aarrr-framework-pirate-metrics","north-star-metric-nsm","flywheel-model","community-driven-growth","aio-artificial-intelligence-optimization","llmo-large-language-model-optimization"]}
+{
+  "slug": "startups",
+  "name": "Ruta Startups",
+  "description": "Frameworks de validacion, traccion y crecimiento para encontrar posicionamiento, medir la metrica clave y escalar loops.",
+  "audience": "Founders, equipos growth, producto y marketing temprano",
+  "color": "from-violet-600 to-lime-400",
+  "frameworks": [
+    "aio-artificial-intelligence-optimization",
+    "llmo-large-language-model-optimization",
+    "aarrr-framework-pirate-metrics",
+    "flywheel-model",
+    "north-star-metric-nsm",
+    "blue-ocean-strategy",
+    "jobs-to-be-done-jtbd",
+    "growth-hacking-framework",
+    "lean-canvas-model",
+    "customer-value-journey",
+    "community-driven-growth",
+    "intent-led-expansion-framework",
+    "viral-marketing-framework",
+    "ai-driven-decision-making"
+  ]
+}

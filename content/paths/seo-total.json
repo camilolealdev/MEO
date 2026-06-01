@@ -1,1 +1,27 @@
-{"slug":"seo-total","name":"Ruta SEO Total","description":"Domina todos los frameworks de posicionamiento orgánico, desde SEO técnico hasta Entity SEO y la nueva búsqueda con IA.","audience":"Profesionales SEO, content strategists","color":"from-violet-600 to-cyan-500","frameworks":["seo-search-engine-optimization","aeo-answer-engine-optimization","gseo-generative-search-engine-optimization","entity-seo","multi-modal-seo-mum","voice-search-optimization-vso","brand-reputation-seo","tangential-seo"]}
+{
+  "slug": "seo-total",
+  "name": "Ruta SEO Total",
+  "description": "Domina los frameworks de posicionamiento organico, busqueda generativa, experiencia post-SERP y visibilidad en motores tradicionales, alternativos y de IA.",
+  "audience": "Profesionales SEO, content strategists, equipos de growth",
+  "color": "from-violet-600 to-cyan-500",
+  "frameworks": [
+    "seo-search-engine-optimization",
+    "aeo-answer-engine-optimization",
+    "geo-geoposicionamiento-ia-local",
+    "llmo-large-language-model-optimization",
+    "uxo-user-experience-optimization",
+    "sxo-search-experience-optimization",
+    "entity-seo",
+    "multi-modal-seo-mum",
+    "gseo-generative-search-engine-optimization",
+    "hyper-intelligence-seo",
+    "visual-seo-arvr-optimization",
+    "voice-search-optimization-vso",
+    "cro-conversion-rate-optimization",
+    "brand-reputation-seo",
+    "tangential-seo",
+    "privacy-first-seo",
+    "blockchain-seo",
+    "alternative-search-optimization"
+  ]
+}

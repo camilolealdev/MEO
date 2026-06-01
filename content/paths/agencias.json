@@ -1,1 +1,31 @@
-{"slug":"agencias","name":"Ruta Agencias","description":"Frameworks para ofrecer MEO como servicio a clientes. Estrategia, reporting, propuestas de valor y orquestación multicanal.","audience":"Agencias de marketing, consultores digitales","color":"from-cyan-500 to-lime-400","frameworks":["seo-search-engine-optimization","sem-search-engine-marketing","sxo-search-experience-optimization","sostac-framework","peso-model-paid-earned-shared-owned","race-framework","imc-integrated-marketing-communications","agile-marketing-framework"]}
+{
+  "slug": "agencias",
+  "name": "Ruta Agencias",
+  "description": "Frameworks para vender, entregar y escalar MEO como servicio: estrategia, campanas, reporting, clientes, posicionamiento y orquestacion multicanal.",
+  "audience": "Agencias de marketing, consultores digitales, equipos client-facing",
+  "color": "from-cyan-500 to-lime-400",
+  "frameworks": [
+    "seo-search-engine-optimization",
+    "sem-search-engine-marketing",
+    "sxo-search-experience-optimization",
+    "stp-model-segmentation-targeting-positioning",
+    "sostac-framework",
+    "peso-model-paid-earned-shared-owned",
+    "race-framework",
+    "cro-conversion-rate-optimization",
+    "growth-hacking-framework",
+    "see-think-do-care-framework",
+    "attribution-modeling",
+    "imc-integrated-marketing-communications",
+    "agile-marketing-framework",
+    "lead-generation-framework",
+    "competitive-positioning",
+    "smarketing-salesmarketing-alignment",
+    "digital-pr-outreach",
+    "competitive-intelligence-framework",
+    "client-lifecycle-management",
+    "agency-growth-scaling",
+    "performance-marketing-framework",
+    "partnership-co-marketing"
+  ]
+}

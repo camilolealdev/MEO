@@ -1,1 +1,29 @@
-{"slug":"enterprise","name":"Ruta Enterprise","description":"Orquestación avanzada de múltiples frameworks para organizaciones grandes con equipos distribuidos.","audience":"CMOs, directores de marketing, enterprise teams","color":"from-cyan-500 to-violet-600","frameworks":["sxo-search-experience-optimization","sostac-framework","imc-integrated-marketing-communications","attribution-modeling","data-analytics-frameworks","agile-marketing-framework","sem-search-engine-marketing","uxo-user-experience-optimization"]}
+{
+  "slug": "enterprise",
+  "name": "Ruta Enterprise",
+  "description": "Arquitectura MEO para organizaciones grandes: datos, medicion, gobernanza, operaciones, automatizacion y protocolos adaptativos.",
+  "audience": "CMOs, marketing ops, enterprise teams",
+  "color": "from-gray-900 to-violet-600",
+  "frameworks": [
+    "stp-model-segmentation-targeting-positioning",
+    "sostac-framework",
+    "attribution-modeling",
+    "imc-integrated-marketing-communications",
+    "agile-marketing-framework",
+    "account-based-marketing-abm",
+    "marketing-mix-modeling-mmm",
+    "data-orchestration-framework",
+    "marketing-automation-maturity-model",
+    "martech-stack-framework",
+    "full-funnel-marketing-framework",
+    "unified-measurement-framework",
+    "marketing-operations-framework",
+    "marketing-governance-framework",
+    "marketing-resource-management",
+    "feedback-loops-automatizados",
+    "cross-channel-orchestration",
+    "cdp-integration-unified-data",
+    "ai-driven-decision-making",
+    "protocolos-modulares-adaptativos"
+  ]
+}

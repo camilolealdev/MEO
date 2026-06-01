@@ -1,1 +1,21 @@
-{"slug":"ia-futuro","name":"Ruta IA & Futuro","description":"Los frameworks más avanzados para dominar la búsqueda con IA, los LLMs y el marketing del futuro.","audience":"Early adopters, innovadores, estrategas digitales","color":"from-lime-400 to-cyan-500","frameworks":["aio-artificial-intelligence-optimization","llmo-large-language-model-optimization","gseo-generative-search-engine-optimization","hyper-intelligence-seo","visual-seo-arvr-optimization","voice-search-optimization-vso","entity-seo","blockchain-seo"]}
+{
+  "slug": "ia-futuro",
+  "name": "Ruta IA & Futuro",
+  "description": "Frameworks para search generativo, IA aplicada, modelos predictivos, personalizacion, automatizacion y arquitectura future-proof.",
+  "audience": "Early adopters, equipos IA, innovators",
+  "color": "from-cyan-500 to-violet-600",
+  "frameworks": [
+    "aio-artificial-intelligence-optimization",
+    "llmo-large-language-model-optimization",
+    "gseo-generative-search-engine-optimization",
+    "hyper-intelligence-seo",
+    "visual-seo-arvr-optimization",
+    "voice-search-optimization-vso",
+    "blockchain-seo",
+    "predictive-analytics-framework",
+    "machine-learning-powered-optimization",
+    "personalization-at-scale",
+    "ai-driven-decision-making",
+    "protocolos-modulares-adaptativos"
+  ]
+}
