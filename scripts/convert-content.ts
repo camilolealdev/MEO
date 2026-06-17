@@ -43,7 +43,7 @@ interface LearningPathDefinition {
 const TIER_MAP: Record<number, Tier> = {};
 for (let i = 1; i <= 8; i += 1) TIER_MAP[i] = "free";
 for (let i = 9; i <= 80; i += 1) TIER_MAP[i] = "pro";
-for (let i = 81; i <= 116; i += 1) TIER_MAP[i] = "agency";
+for (let i = 81; i <= 117; i += 1) TIER_MAP[i] = "agency";
 
 const CATEGORY_MAP: Record<number, string> = {};
 for (let i = 1; i <= 8; i += 1) CATEGORY_MAP[i] = "core-meo";
@@ -53,6 +53,7 @@ for (let i = 30; i <= 39; i += 1) CATEGORY_MAP[i] = "especializado";
 for (let i = 40; i <= 45; i += 1) CATEGORY_MAP[i] = "complementario";
 for (let i = 46; i <= 80; i += 1) CATEGORY_MAP[i] = "clasico";
 for (let i = 81; i <= 116; i += 1) CATEGORY_MAP[i] = "avanzado";
+CATEGORY_MAP[117] = "emergente";
 
 const ESTIMATED_MINUTES: Record<string, number> = {
   "core-meo": 45,
@@ -64,6 +65,10 @@ const ESTIMATED_MINUTES: Record<string, number> = {
   avanzado: 50,
 };
 
+const ESTIMATED_MINUTES_BY_NUMBER: Record<number, number> = {
+  117: 60,
+};
+
 const LEARNING_PATHS: LearningPathDefinition[] = [
   {
     slug: "seo-total",
@@ -72,7 +77,7 @@ const LEARNING_PATHS: LearningPathDefinition[] = [
       "Domina los frameworks de posicionamiento organico, busqueda generativa, experiencia post-SERP y visibilidad en motores tradicionales, alternativos y de IA.",
     audience: "Profesionales SEO, content strategists, equipos de growth",
     color: "from-violet-600 to-cyan-500",
-    numbers: [1, 2, 4, 5, 7, 8, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29],
+    numbers: [1, 2, 4, 5, 7, 8, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 117],
   },
   {
     slug: "agencias",
@@ -81,7 +86,7 @@ const LEARNING_PATHS: LearningPathDefinition[] = [
       "Frameworks para vender, entregar y escalar MEO como servicio: estrategia, campanas, reporting, clientes, posicionamiento y orquestacion multicanal.",
     audience: "Agencias de marketing, consultores digitales, equipos client-facing",
     color: "from-cyan-500 to-lime-400",
-    numbers: [1, 6, 8, 10, 12, 13, 15, 24, 32, 37, 43, 44, 45, 48, 55, 66, 71, 76, 93, 94, 97, 110],
+    numbers: [1, 6, 8, 10, 12, 13, 15, 24, 32, 37, 43, 44, 45, 48, 55, 66, 71, 76, 93, 94, 97, 110, 117],
   },
   {
     slug: "ecommerce",
@@ -90,7 +95,7 @@ const LEARNING_PATHS: LearningPathDefinition[] = [
       "Sistema para tiendas online: adquisicion, experiencia, conversion, retencion, personalizacion y decisiones de compra.",
     audience: "Ecommerce managers, founders DTC, equipos retail",
     color: "from-lime-400 to-violet-600",
-    numbers: [1, 4, 6, 7, 8, 14, 24, 34, 49, 50, 52, 53, 57, 60, 63, 64],
+    numbers: [1, 4, 6, 7, 8, 14, 24, 34, 49, 50, 52, 53, 57, 60, 63, 64, 117],
   },
   {
     slug: "startups",
@@ -99,7 +104,7 @@ const LEARNING_PATHS: LearningPathDefinition[] = [
       "Frameworks de validacion, traccion y crecimiento para encontrar posicionamiento, medir la metrica clave y escalar loops.",
     audience: "Founders, equipos growth, producto y marketing temprano",
     color: "from-violet-600 to-lime-400",
-    numbers: [3, 5, 14, 16, 17, 30, 31, 32, 33, 34, 38, 39, 74, 115],
+    numbers: [3, 5, 14, 16, 17, 30, 31, 32, 33, 34, 38, 39, 74, 115, 117],
   },
   {
     slug: "enterprise",
@@ -108,7 +113,7 @@ const LEARNING_PATHS: LearningPathDefinition[] = [
       "Arquitectura MEO para organizaciones grandes: datos, medicion, gobernanza, operaciones, automatizacion y protocolos adaptativos.",
     audience: "CMOs, marketing ops, enterprise teams",
     color: "from-gray-900 to-violet-600",
-    numbers: [10, 12, 43, 44, 45, 56, 77, 78, 79, 80, 81, 83, 84, 85, 86, 112, 113, 114, 115, 116],
+    numbers: [10, 12, 43, 44, 45, 56, 77, 78, 79, 80, 81, 83, 84, 85, 86, 112, 113, 114, 115, 116, 117],
   },
   {
     slug: "ia-futuro",
@@ -117,7 +122,7 @@ const LEARNING_PATHS: LearningPathDefinition[] = [
       "Frameworks para search generativo, IA aplicada, modelos predictivos, personalizacion, automatizacion y arquitectura future-proof.",
     audience: "Early adopters, equipos IA, innovators",
     color: "from-cyan-500 to-violet-600",
-    numbers: [3, 5, 20, 21, 22, 23, 28, 58, 61, 64, 115, 116],
+    numbers: [3, 5, 20, 21, 22, 23, 28, 58, 61, 64, 115, 116, 117],
   },
 ];
 
@@ -201,7 +206,7 @@ function parseCanonicalFrameworks(): Framework[] {
     const match = matches[index];
     const next = matches[index + 1];
     const number = Number(match[1]);
-    if (!Number.isInteger(number) || number < 1 || number > 116) continue;
+    if (!Number.isInteger(number) || number < 1 || number > 117) continue;
 
     const title = match[2].trim().replace(/\*\*/g, "");
     const start = match.index! + match[0].length;
@@ -215,7 +220,7 @@ function parseCanonicalFrameworks(): Framework[] {
       slug: slugify(title),
       category,
       tier: TIER_MAP[number] ?? "pro",
-      estimatedMinutes: ESTIMATED_MINUTES[category] ?? 30,
+      estimatedMinutes: ESTIMATED_MINUTES_BY_NUMBER[number] ?? ESTIMATED_MINUTES[category] ?? 30,
       definition,
       paths: [],
     });
@@ -274,7 +279,7 @@ function parseHeading(rawHeading: string, fromTitle: (title: string) => number |
 
   const title = cleanTitle(numberedTitle?.[1] ?? rawHeading);
   if (!number) number = fromTitle(title);
-  if (!number || number < 1 || number > 116) return null;
+  if (!number || number < 1 || number > 117) return null;
 
   return { number, title };
 }

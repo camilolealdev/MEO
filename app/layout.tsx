@@ -27,7 +27,7 @@ export const metadata: Metadata = {
     template: "%s | MEO",
   },
   description:
-    "Domina los 116 frameworks del Marketing Engine Optimization. El sistema más completo de marketing digital integrado con IA.",
+    "Domina los 117 frameworks del Marketing Engine Optimization. El sistema más completo de marketing digital integrado con IA.",
   metadataBase: new URL("https://meo.com"),
 };
 

@@ -2,21 +2,15 @@ import { auth } from "@/lib/auth";
 import { getAllFrameworks } from "@/lib/content";
 import { FrameworkCard } from "@/components/ui/FrameworkCard";
 
-const CATEGORIES = [
-  "seo", "aeo", "ai", "geo", "llmo", "sem", "marketing", "analytics",
-  "content", "social-media", "email", "cro", "ads", "sales",
-  "branding", "strategy", "innovation", "ethics",
-] as const;
-
 export default async function AprenderPage() {
   const session = await auth();
-  const tier = (session?.user as any)?.tier ?? "free";
+  const tier = session?.user.tier ?? "free";
   const all = getAllFrameworks();
 
   return (
     <div className="p-8 max-w-6xl">
       <h1 className="font-display font-bold text-3xl text-gray-900 mb-2">Explorar Frameworks</h1>
-      <p className="text-gray-500 mb-8">Los 116 frameworks del sistema MEO.</p>
+      <p className="text-gray-500 mb-8">Los 117 frameworks del sistema MEO.</p>
 
       <div className="space-y-10">
         <div>

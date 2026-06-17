@@ -1,6 +1,6 @@
 # MEO — Marketing Engine Optimization Platform
 
-Plataforma de aprendizaje para profesionales de marketing digital. Contiene **116 frameworks de marketing** organizados en **6 rutas de aprendizaje** con modelo freemium y tres niveles de acceso.
+Plataforma de aprendizaje para profesionales de marketing digital. Contiene **117 frameworks de marketing** organizados en **6 rutas de aprendizaje** con modelo freemium y tres niveles de acceso.
 
 **Producción:** https://meo-steel.vercel.app  
 **Repositorio:** https://github.com/Coorops25/MEO
@@ -20,7 +20,7 @@ Plataforma de aprendizaje para profesionales de marketing digital. Contiene **11
 | Animaciones | Framer Motion 12 |
 | Email | Resend (magic links) |
 | Pagos | Stripe · MercadoPago · PayPal |
-| Contenido | MDX (116 archivos) + JSON (6 rutas) |
+| Contenido | MDX (117 archivos) + JSON (6 rutas) |
 | Deploy | Vercel (región iad1) |
 
 ---
@@ -93,7 +93,7 @@ meo-platform/
 ├── types/
 │   └── next-auth.d.ts              # Augmentación de tipos Session/User
 ├── content/
-│   ├── frameworks/                 # 116 archivos MDX (#001–#116)
+│   ├── frameworks/                 # 117 archivos MDX (#001–#117)
 │   └── paths/                      # 6 archivos JSON de rutas
 ├── scripts/
 │   └── convert-content.ts          # Convierte texto plano a MDX
@@ -271,13 +271,13 @@ export const config = {
 | Tier | Precio | Frameworks | Funcionalidades |
 |------|--------|-----------|----------------|
 | Explorer (free) | $0/mes | 8 (core) | Contenido introductorio |
-| Practitioner (pro) | $29/mes | 116 | 6 rutas · quizzes · certificados · tracking |
-| Orchestrator (agency) | $79/mes | 116 | Todo lo anterior + 20 planes sectoriales · PDFs · templates · soporte prioritario |
+| Practitioner (pro) | $29/mes | 117 | 6 rutas · quizzes · certificados · tracking |
+| Orchestrator (agency) | $79/mes | 117 | Todo lo anterior + 20 planes sectoriales · PDFs · templates · soporte prioritario |
 
 Los frameworks se asignan por tier en el frontmatter MDX:
 - Frameworks #001–#008: `tier: "free"`
 - Frameworks #009–#080: `tier: "pro"`
-- Frameworks #081–#116: `tier: "agency"`
+- Frameworks #081–#117: `tier: "agency"`
 
 ---
 
@@ -288,14 +288,14 @@ Los frameworks se asignan por tier en el frontmatter MDX:
 | Ruta | Archivo | Descripción |
 |------|---------|-------------|
 | `/` | `app/(marketing)/page.tsx` | Landing: hero, 8 frameworks, 6 rutas, stats, Schema.org |
-| `/curso` | `app/(marketing)/curso/page.tsx` | Catálogo completo de 116 frameworks por categoría |
+| `/curso` | `app/(marketing)/curso/page.tsx` | Catálogo completo de 117 frameworks por categoría |
 | `/precios` | `app/(marketing)/precios/page.tsx` | Pricing con selector Stripe/MercadoPago/PayPal |
 | `/login` | `app/(auth)/login/page.tsx` | Login Google + magic link |
 | `/register` | `app/(auth)/register/page.tsx` | Registro Google + magic link |
 | `/learn/[slug]` | `app/learn/[slug]/page.tsx` | Detalle framework (MDXRemote + TierGate) |
 | `/learn/ruta/[slug]` | `app/learn/ruta/[slug]/page.tsx` | Detalle ruta de aprendizaje |
 | `/robots.txt` | `app/robots.ts` | Auto-generado por Next.js |
-| `/sitemap.xml` | `app/sitemap.ts` | 116 frameworks + 6 rutas + core pages |
+| `/sitemap.xml` | `app/sitemap.ts` | 117 frameworks + 6 rutas + core pages |
 
 ### Protegidas (requieren sesión)
 
@@ -303,7 +303,7 @@ Los frameworks se asignan por tier en el frontmatter MDX:
 |------|---------|-------------|
 | `/onboarding` | `app/(auth)/onboarding/page.tsx` | Selección de perfil tras primer login |
 | `/dashboard` | `app/(dashboard)/dashboard/page.tsx` | Panel principal, stats, primeros frameworks |
-| `/aprender` | `app/(dashboard)/aprender/page.tsx` | Los 116 frameworks con tier gating |
+| `/aprender` | `app/(dashboard)/aprender/page.tsx` | Los 117 frameworks con tier gating |
 | `/mi-ruta` | `app/(dashboard)/mi-ruta/page.tsx` | Las 6 rutas de aprendizaje |
 | `/progreso` | `app/(dashboard)/progreso/page.tsx` | Historial de progreso |
 
@@ -413,7 +413,7 @@ Recibe eventos de PayPal.
 
 ### Frameworks — `content/frameworks/`
 
-116 archivos MDX. Estructura del frontmatter:
+117 archivos MDX. Estructura del frontmatter:
 
 ```yaml
 ---
@@ -546,7 +546,7 @@ Abre http://localhost:3000.
 | Email | `master871017@meo.com` |
 | Contraseña | `Admin123!` |
 | Rol | `admin` |
-| Tier | `agency` (acceso completo a 116 frameworks) |
+| Tier | `agency` (acceso completo a 117 frameworks) |
 
 ### Scripts de utilidad
 
@@ -692,7 +692,7 @@ app/layout.tsx
 - Homepage (priority: 1.0)
 - /curso (priority: 0.9)
 - /precios (priority: 0.8)
-- 116 frameworks: `free` → priority 0.9, `pro`/`agency` → priority 0.7
+- 117 frameworks: `free` → priority 0.9, `pro`/`agency` → priority 0.7
 - 6 rutas de aprendizaje (priority: 0.8)
 
 ### robots.txt
@@ -722,6 +722,6 @@ npx tsx scripts/convert-content.ts
 
 - Lee archivos de texto fuente desde el directorio padre
 - Detecta secciones con headers `## #N: Título`
-- Asigna tier automáticamente: #1–8 → free, #9–80 → pro, #81–116 → agency
+- Asigna tier automáticamente: #1–8 → free, #9–80 → pro, #81–117 → agency
 - Genera frontmatter YAML con metadatos completos
-- Escribe 116 archivos `.mdx` en `content/frameworks/`
+- Escribe 117 archivos `.mdx` en `content/frameworks/`
