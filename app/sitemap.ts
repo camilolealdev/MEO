@@ -3,14 +3,18 @@ import { MetadataRoute } from "next";
 import { getAllFrameworks, getAllPaths } from "@/lib/content";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://meo.com";
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://meo-steel.vercel.app";
 
-  const frameworks = getAllFrameworks().map((fw) => ({
-    url: `${baseUrl}/learn/${fw.slug}`,
-    lastModified: new Date(),
-    changeFrequency: "monthly" as const,
-    priority: fw.tier === "free" ? 0.9 : 0.7,
-  }));
+  // Solo se indexa el contenido público (free). Los frameworks de pago no se
+  // exponen en el sitemap para no filtrar contenido premium a los buscadores.
+  const frameworks = getAllFrameworks()
+    .filter((fw) => fw.tier === "free")
+    .map((fw) => ({
+      url: `${baseUrl}/learn/${fw.slug}`,
+      lastModified: new Date(),
+      changeFrequency: "monthly" as const,
+      priority: 0.9,
+    }));
 
   const paths = getAllPaths().map((p) => ({
     url: `${baseUrl}/learn/ruta/${p.slug}`,

@@ -2,8 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
 import { progress } from "@/lib/schema";
-import { eq, and } from "drizzle-orm";
-import { nanoid } from "nanoid";
+import { eq, sql } from "drizzle-orm";
+import { getFrameworkBySlug } from "@/lib/content";
+import { hasAccess, type Tier } from "@/lib/tiers";
 
 export async function GET() {
   const session = await auth();
@@ -24,27 +25,56 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const body = await req.json();
-  const { frameworkSlug, timeSpentSeconds } = body;
-
-  if (!frameworkSlug) {
-    return NextResponse.json({ error: "Missing frameworkSlug" }, { status: 400 });
+  let body: unknown;
+  try {
+    body = await req.json();
+  } catch {
+    return NextResponse.json({ error: "Invalid JSON body" }, { status: 400 });
   }
 
-  const existing = await db.query.progress.findFirst({
-    where: and(
-      eq(progress.userId, session.user.id),
-      eq(progress.frameworkSlug, frameworkSlug)
-    ),
-  });
+  const { frameworkSlug, timeSpentSeconds } = (body ?? {}) as {
+    frameworkSlug?: unknown;
+    timeSpentSeconds?: unknown;
+  };
 
-  if (!existing) {
-    await db.insert(progress).values({
-      id: nanoid(),
-      userId: session.user.id,
-      frameworkSlug,
-      timeSpentSeconds: timeSpentSeconds ?? 0,
-    });
+  if (typeof frameworkSlug !== "string" || frameworkSlug.length === 0) {
+    return NextResponse.json({ error: "frameworkSlug requerido" }, { status: 400 });
+  }
+
+  const time =
+    typeof timeSpentSeconds === "number" && Number.isFinite(timeSpentSeconds) && timeSpentSeconds >= 0
+      ? Math.floor(timeSpentSeconds)
+      : 0;
+
+  // El framework debe existir y el usuario debe tener acceso a su tier.
+  const fw = getFrameworkBySlug(frameworkSlug);
+  if (!fw) {
+    return NextResponse.json({ error: "Framework no encontrado" }, { status: 404 });
+  }
+  const userTier: Tier = session.user.tier ?? "free";
+  if (!hasAccess(userTier, fw.tier as Tier)) {
+    return NextResponse.json({ error: "Tier insuficiente" }, { status: 403 });
+  }
+
+  try {
+    // Upsert atómico: sin race condition (TOCTOU) y acumulando el tiempo en
+    // lugar de ignorarlo cuando ya existe progreso previo.
+    await db
+      .insert(progress)
+      .values({
+        userId: session.user.id,
+        frameworkSlug,
+        timeSpentSeconds: time,
+      })
+      .onConflictDoUpdate({
+        target: [progress.userId, progress.frameworkSlug],
+        set: {
+          timeSpentSeconds: sql`${progress.timeSpentSeconds} + ${time}`,
+        },
+      });
+  } catch (error) {
+    console.error("progress POST error:", error);
+    return NextResponse.json({ error: "No se pudo guardar el progreso" }, { status: 500 });
   }
 
   return NextResponse.json({ success: true });

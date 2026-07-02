@@ -54,20 +54,28 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   callbacks: {
     async jwt({ token, user, trigger }) {
       if (user) token.id = user.id!;
-      if (user || trigger === "update") {
+      // Refresco periódico de tier/rol: además del primer login y de update(),
+      // se revalida contra la BD si pasaron más de REFRESH_MS. Así un cambio de
+      // tier (pago) o una revocación (cancelación / baja de rol) se propaga en
+      // minutos, no cuando expire el JWT (~30 días), sin consultar la BD por request.
+      const REFRESH_MS = 5 * 60 * 1000;
+      const now = Date.now();
+      const lastRefresh = token.refreshedAt ?? 0;
+      if (user || trigger === "update" || now - lastRefresh > REFRESH_MS) {
         const dbUser = await db.query.users.findFirst({
           where: eq(users.id, token.id!),
         });
         token.tier = dbUser?.tier ?? "free";
         token.role = dbUser?.role ?? "user";
+        token.refreshedAt = now;
       }
       return token;
     },
     session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        (session.user as any).tier = (token as any).tier ?? "free";
-        (session.user as any).role = (token as any).role ?? "user";
+        session.user.id = token.id;
+        session.user.tier = token.tier ?? "free";
+        session.user.role = token.role ?? "user";
       }
       return session;
     },

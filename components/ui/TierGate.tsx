@@ -2,8 +2,7 @@
 import { motion } from "framer-motion";
 import Link from "next/link";
 import { Lock } from "lucide-react";
-
-const TIER_LABELS = { pro: "Practitioner", agency: "Orchestrator" };
+import { TIER_LABELS } from "@/lib/tiers";
 
 interface TierGateProps {
   requiredTier: "pro" | "agency";

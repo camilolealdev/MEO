@@ -52,17 +52,54 @@ export async function createCheckoutSession(userId: string, priceId: string, use
   });
 }
 
+// Estados en los que se conserva el acceso de pago. `past_due` se mantiene para
+// respetar el ciclo de dunning de Stripe (reintentos de cobro) en lugar de
+// degradar al instante; `trialing` cubre pruebas gratuitas.
+const KEEP_ACCESS_STATUSES = new Set<Stripe.Subscription.Status>([
+  "active",
+  "trialing",
+  "past_due",
+]);
+
 export async function handleSubscriptionUpsert(subscription: Stripe.Subscription) {
   const priceId = subscription.items.data[0].price.id;
-  const tier = TIER_PRICES[priceId] ?? "pro";
-  const userId = subscription.metadata.userId;
-  if (!userId) return;
+  const tier = TIER_PRICES[priceId];
+  // Sin default a "pro": un price desconocido no debe conceder acceso de pago.
+  if (!tier) {
+    console.error(`handleSubscriptionUpsert: priceId desconocido "${priceId}" (sub ${subscription.id})`);
+    return;
+  }
+
+  // El metadata.userId solo está garantizado en la Checkout Session inicial;
+  // en eventos updated/deleted suele venir vacío. Fallback: resolver por el
+  // stripeCustomerId almacenado en users.
+  let userId: string | undefined = subscription.metadata?.userId;
+  if (!userId) {
+    const customerId =
+      typeof subscription.customer === "string"
+        ? subscription.customer
+        : subscription.customer?.id;
+    if (customerId) {
+      const owner = await db.query.users.findFirst({
+        where: eq(users.stripeCustomerId, customerId),
+      });
+      userId = owner?.id;
+    }
+  }
+  if (!userId) {
+    console.error(`handleSubscriptionUpsert: no se pudo resolver el usuario (sub ${subscription.id})`);
+    return;
+  }
+  // const para que TS conserve el estrechamiento a string dentro del closure.
+  const resolvedUserId = userId;
+
+  const keepAccess = KEEP_ACCESS_STATUSES.has(subscription.status);
 
   await db.transaction(async (tx) => {
     await tx.insert(subscriptions)
       .values({
         id: subscription.id,
-        userId,
+        userId: resolvedUserId,
         stripeSubscriptionId: subscription.id,
         stripePriceId: priceId,
         status: subscription.status,
@@ -79,7 +116,7 @@ export async function handleSubscriptionUpsert(subscription: Stripe.Subscription
       });
 
     await tx.update(users)
-      .set({ tier: subscription.status === "active" ? tier : "free" })
-      .where(eq(users.id, userId));
+      .set({ tier: keepAccess ? tier : "free" })
+      .where(eq(users.id, resolvedUserId));
   });
 }

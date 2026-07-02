@@ -19,7 +19,14 @@ const RELEVANT_EVENTS = new Set([
 
 async function verifyPayPalSignature(req: NextRequest, body: string): Promise<boolean> {
   const webhookId = process.env.PAYPAL_WEBHOOK_ID;
-  if (!webhookId) return true;
+  if (!webhookId) {
+    // Fail-closed en producción (ver webhook de MercadoPago para el razonamiento).
+    if (process.env.NODE_ENV === "production") {
+      console.error("PAYPAL_WEBHOOK_ID no está configurado — webhook rechazado");
+      return false;
+    }
+    return true;
+  }
 
   const authAlgo = req.headers.get("paypal-auth-algo") ?? "";
   const certUrl = req.headers.get("paypal-cert-url") ?? "";

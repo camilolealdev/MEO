@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import type { FrameworkMeta } from "@/lib/content";
+import { hasAccess, TIER_LABELS, type Tier } from "@/lib/tiers";
 import { Clock, Lock } from "lucide-react";
 
 const TIER_COLORS = {
@@ -11,23 +12,15 @@ const TIER_COLORS = {
   agency: "text-cyan-600 bg-cyan-50 border-cyan-200",
 };
 
-const TIER_LABELS = {
-  free: "Explorer",
-  pro: "Practitioner",
-  agency: "Orchestrator",
-};
-
-const TIER_ORDER = { free: 0, pro: 1, agency: 2 };
-
 interface FrameworkCardProps {
   framework: FrameworkMeta;
-  userTier: "free" | "pro" | "agency";
+  userTier: Tier;
   completed?: boolean;
   index?: number;
 }
 
 export function FrameworkCard({ framework, userTier, completed = false, index = 0 }: FrameworkCardProps) {
-  const isLocked = TIER_ORDER[userTier] < TIER_ORDER[framework.tier];
+  const isLocked = !hasAccess(userTier, framework.tier);
 
   return (
     <motion.div

@@ -4,7 +4,16 @@ import crypto from "crypto";
 
 function verifyMPSignature(req: NextRequest, body: string): boolean {
   const secret = process.env.MERCADOPAGO_WEBHOOK_SECRET;
-  if (!secret) return true;
+  if (!secret) {
+    // Fail-closed en producción: sin secreto configurado no se puede verificar
+    // la autenticidad, así que se rechaza. En desarrollo se permite para poder
+    // probar localmente sin secreto.
+    if (process.env.NODE_ENV === "production") {
+      console.error("MERCADOPAGO_WEBHOOK_SECRET no está configurado — webhook rechazado");
+      return false;
+    }
+    return true;
+  }
   const xSignature = req.headers.get("x-signature") ?? "";
   const tsMatch = xSignature.match(/ts=(\d+)/);
   const hashMatch = xSignature.match(/v1=([a-f0-9]+)/);
@@ -12,7 +21,12 @@ function verifyMPSignature(req: NextRequest, body: string): boolean {
   const ts = tsMatch[1];
   const hash = hashMatch[1];
   const computed = crypto.createHmac("sha256", secret).update(`${ts}.${body}`).digest("hex");
-  return crypto.timingSafeEqual(Buffer.from(computed), Buffer.from(hash));
+  const computedBuf = Buffer.from(computed);
+  const hashBuf = Buffer.from(hash);
+  // timingSafeEqual lanza si las longitudes difieren: comparar primero evita un
+  // 500 y devuelve un rechazo determinista (401) ante una firma malformada.
+  if (computedBuf.length !== hashBuf.length) return false;
+  return crypto.timingSafeEqual(computedBuf, hashBuf);
 }
 
 export async function POST(req: NextRequest) {

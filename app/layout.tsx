@@ -21,14 +21,32 @@ const jetbrains = JetBrains_Mono({
   variable: "--font-jetbrains",
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://meo-steel.vercel.app";
+const siteTitle = "MEO — Marketing Engine Optimization";
+const siteDescription =
+  "Domina los 117 frameworks del Marketing Engine Optimization. El sistema más completo de marketing digital integrado con IA.";
+
 export const metadata: Metadata = {
   title: {
-    default: "MEO — Marketing Engine Optimization",
+    default: siteTitle,
     template: "%s | MEO",
   },
-  description:
-    "Domina los 117 frameworks del Marketing Engine Optimization. El sistema más completo de marketing digital integrado con IA.",
-  metadataBase: new URL("https://meo.com"),
+  description: siteDescription,
+  metadataBase: new URL(siteUrl),
+  alternates: { canonical: "/" },
+  openGraph: {
+    type: "website",
+    siteName: "MEO",
+    title: siteTitle,
+    description: siteDescription,
+    url: siteUrl,
+    locale: "es_CO",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: siteTitle,
+    description: siteDescription,
+  },
 };
 
 export default function RootLayout({
