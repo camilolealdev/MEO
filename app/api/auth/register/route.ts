@@ -3,14 +3,14 @@ import bcrypt from "bcryptjs";
 import { db } from "@/lib/db";
 import { users } from "@/lib/schema";
 import { eq } from "drizzle-orm";
-import { rateLimit, getClientIp } from "@/lib/rate-limit";
+import { rateLimitAsync, getClientIp } from "@/lib/rate-limit";
 
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 export async function POST(req: Request) {
   try {
     // Rate limit: 5 registros por IP cada 10 minutos.
-    const limit = rateLimit(`register:${getClientIp(req)}`, 5, 10 * 60 * 1000);
+    const limit = await rateLimitAsync(`register:${getClientIp(req)}`, 5, 10 * 60 * 1000);
     if (!limit.ok) {
       return NextResponse.json(
         { error: "Demasiados intentos. Intenta más tarde." },

@@ -101,12 +101,17 @@ Sin embargo, el "camino feliz" oculta **brechas que comprometen el modelo de neg
 > ```
 > No la apliqué automáticamente para no modificar la BD de producción sin tu visto bueno. El helper `isNewWebhookEvent` degrada de forma segura si la tabla aún no existe (procesa el webhook y loggea), así que el deploy no se rompe si el orden se invierte.
 >
-> **Otros items que aún requieren infraestructura/decisión:**
-> - **SEC-04** — el limitador actual es en memoria (por-instancia). Para serverless robusto: migrar a Upstash/Redis.
-> - **OBS-01 (Sentry)** — requiere cuenta/DSN.
-> - **PAY-10 (reconciliación)** — requiere un cron.
-> - **QUAL-02** — ampliar la suite (content/webhooks) y añadir e2e Playwright.
-> - **DATA-02/05** (enums/CHECK, `timestamptz`) — pendientes; conviene consolidarlas en la próxima migración.
+> **Otros items — estado tras el tercer lote (3 agentes):**
+> - **SEC-04** — ✅ Añadido `rateLimitAsync` con backend **Upstash REST** (activado por `UPSTASH_REDIS_REST_URL`/`TOKEN`, fallback en memoria). `/register` y login ya lo usan. Solo falta configurar las envs de Upstash para activarlo.
+> - **OBS-01** — ✅ `lib/logger.ts` (logging estructurado) + `instrumentation.ts` (`onRequestError`). Punto de integración de Sentry preparado (import dinámico bajo `SENTRY_DSN`); solo falta añadir el paquete/DSN si se decide usarlo.
+> - **PAY-10** — ✅ Scaffold `app/api/cron/reconcile/route.ts` (protegido por `CRON_SECRET`, reconcilia Stripe; MP/PayPal como TODO) + cron diario en `vercel.json`. Falta definir `CRON_SECRET`.
+> - **QUAL-02** — ✅ Ampliada con `tests/content.test.ts` (12 tests; 117 frameworks / 6 rutas / integridad referencial 100%). Pendiente: e2e Playwright.
+> - **DATA-02/05** (enums/CHECK, `timestamptz`) — pendientes; son migraciones modificadoras (no aditivas), conviene una ventana de mantenimiento.
+>
+> **🚦 Bloqueo del merge a `main`:** el merge dispara deploy de producción, y el código nuevo usa columnas (`provider`, `updated_at`) y la tabla `webhook_events` de la migración `0003`. **La `0003` DEBE aplicarse ANTES del deploy** o se romperán las escrituras de suscripción/tier. La aplicación automática fue (correctamente) bloqueada por ser un cambio en la BD de producción. Aplícala tú y luego se puede mergear:
+> ```bash
+> DATABASE_URL="postgresql://..." npx drizzle-kit push   # o ejecutar drizzle/0003_gap_analysis.sql en Neon
+> ```
 
 ### P3 — Deuda técnica y pulido
 

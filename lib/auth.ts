@@ -8,7 +8,7 @@ import { db } from "./db";
 import { users, accounts, sessions, verificationTokens } from "./schema";
 import { eq } from "drizzle-orm";
 import { authConfig } from "../auth.config";
-import { rateLimit, getClientIp } from "./rate-limit";
+import { rateLimitAsync, getClientIp } from "./rate-limit";
 
 // Hash dummy (bcrypt de un valor aleatorio) para igualar el tiempo de respuesta
 // cuando el usuario no existe y evitar enumeración por temporización (SEC-05).
@@ -31,7 +31,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         // atacante bloquear la cuenta de un tercero (lockout DoS). 20 intentos
         // por IP cada 10 minutos frenan la fuerza bruta desde un mismo origen.
         const ip = request instanceof Request ? getClientIp(request) : "unknown";
-        if (!rateLimit(`login:${ip}`, 20, 10 * 60 * 1000).ok) {
+        if (!(await rateLimitAsync(`login:${ip}`, 20, 10 * 60 * 1000)).ok) {
           return null;
         }
 
