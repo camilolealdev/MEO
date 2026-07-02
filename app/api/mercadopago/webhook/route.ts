@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handleMPWebhook } from "@/lib/mercadopago";
+import { isNewWebhookEvent } from "@/lib/webhook-events";
 import crypto from "crypto";
 
 function verifyMPSignature(req: NextRequest, body: string): boolean {
@@ -38,6 +39,11 @@ export async function POST(req: NextRequest) {
     const parsed = JSON.parse(body);
     if (parsed.type !== "preapproval" || !parsed.data?.id) {
       return NextResponse.json({ received: true });
+    }
+    // Idempotencia por id de notificación (fallback al id del preapproval).
+    const eventId = String(parsed.id ?? parsed.data.id);
+    if (!(await isNewWebhookEvent("mercadopago", eventId))) {
+      return NextResponse.json({ received: true, duplicate: true });
     }
     await handleMPWebhook(parsed.data.id);
     return NextResponse.json({ received: true });

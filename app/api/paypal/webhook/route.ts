@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handlePayPalWebhook } from "@/lib/paypal";
+import { isNewWebhookEvent } from "@/lib/webhook-events";
 
 const PAYPAL_API =
   process.env.PAYPAL_MODE === "live"
@@ -84,6 +85,7 @@ export async function POST(req: NextRequest) {
     }
 
     const parsed = JSON.parse(body) as {
+      id?: string;
       event_type?: string;
       resource?: { id?: string };
     };
@@ -97,6 +99,11 @@ export async function POST(req: NextRequest) {
 
     if (!RELEVANT_EVENTS.has(eventType)) {
       return NextResponse.json({ received: true });
+    }
+
+    // Idempotencia por id de evento de PayPal.
+    if (!(await isNewWebhookEvent("paypal", parsed.id ?? ""))) {
+      return NextResponse.json({ received: true, duplicate: true });
     }
 
     await handlePayPalWebhook(subscriptionId);

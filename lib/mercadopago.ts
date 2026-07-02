@@ -83,6 +83,7 @@ export async function handleMPWebhook(preapprovalId: string): Promise<void> {
       .values({
         id: nanoid(),
         userId,
+        provider: "mercadopago",
         stripeSubscriptionId: preapprovalId,
         stripePriceId: planId,
         status: status ?? "pending",

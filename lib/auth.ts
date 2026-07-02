@@ -8,6 +8,11 @@ import { db } from "./db";
 import { users, accounts, sessions, verificationTokens } from "./schema";
 import { eq } from "drizzle-orm";
 import { authConfig } from "../auth.config";
+import { rateLimit } from "./rate-limit";
+
+// Hash dummy (bcrypt de un valor aleatorio) para igualar el tiempo de respuesta
+// cuando el usuario no existe y evitar enumeración por temporización (SEC-05).
+const DUMMY_HASH = "$2b$12$C6UzMDM.H6dfI/f/IKcEeO3jJ6q3Q1w9m6qk4y1sB4x8c2b0Z0aZq";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   ...authConfig,
@@ -22,13 +27,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const password = credentials?.password as string | undefined;
         if (!email || !password) return null;
 
+        // Rate limit: 10 intentos por email cada 10 minutos (anti fuerza bruta).
+        if (!rateLimit(`login:${email.toLowerCase()}`, 10, 10 * 60 * 1000).ok) {
+          return null;
+        }
+
         const user = await db.query.users.findFirst({
           where: eq(users.email, email),
         });
-        if (!user || !user.passwordHash) return null;
 
-        const valid = await bcrypt.compare(password, user.passwordHash);
-        if (!valid) return null;
+        // Comparar siempre (contra hash real o dummy) para no filtrar por timing
+        // si el email existe o no.
+        const valid = await bcrypt.compare(password, user?.passwordHash ?? DUMMY_HASH);
+        if (!user || !user.passwordHash || !valid) return null;
 
         return {
           id: user.id,

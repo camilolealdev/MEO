@@ -72,30 +72,41 @@ Sin embargo, el "camino feliz" oculta **brechas que comprometen el modelo de neg
 
 ### P1 — Robustez de pagos y datos
 
-- [ ] **PAY-05** — Idempotencia de webhooks: tabla `webhook_events(provider, event_id UNIQUE)` + guard de orden por timestamp. _(requiere migración de BD — ver nota)_
+- [x] **PAY-05** — ✅ Idempotencia de webhooks: tabla `webhook_events(provider, event_id UNIQUE)` + helper `isNewWebhookEvent` conectado en Stripe/MP/PayPal (degradación segura si la tabla no existe aún). **Requiere aplicar la migración `0003`.**
 - [x] **PAY-09** — ✅ Sincronización Stripe: si falta `metadata.userId` (updated/deleted) se resuelve por `stripeCustomerId`.
-- [ ] **PAY-10** — Reconciliación: verificación en `success_url` + cron diario contra cada proveedor. _(pendiente)_
+- [ ] **PAY-10** — Reconciliación: verificación en `success_url` + cron diario contra cada proveedor. _(pendiente — necesita cron/infra)_
 - [x] **PAY-11** — ✅ Dunning: `active`/`trialing`/`past_due` conservan acceso; solo se degrada en estados terminales (Stripe). MP/PayPal pendientes de afinar.
-- [x] **DATA-08** — ✅ `/api/progress`: upsert atómico (`onConflictDoUpdate` + acumula tiempo), validación de entrada y autorización por tier. _(validación manual, sin añadir Zod)_
+- [x] **DATA-08** — ✅ `/api/progress`: upsert atómico (`onConflictDoUpdate` + acumula tiempo), validación de entrada y autorización por tier.
 - [x] **CONTENT-01/02/03** — ✅ Caché a nivel de módulo (Map por slug, O(1)), manejo de errores por archivo y validación de frontmatter en `lib/content.ts`.
-- [ ] **SEC-04** — Rate limiting en `/register` y en `authorize` (login). _(requiere store tipo Upstash/Redis — ver nota)_
+- [x] **SEC-04** — ✅ Rate limiting en `/register` (por IP) y `authorize`/login (por email) + mitigación de timing (SEC-05, hash dummy) y hardening de registro (SEC-06 pass≥8, SEC-09 email). _(limitador en memoria; migrar a Upstash para serverless robusto)_
 - [x] **PAY-15** — ✅ Stripe `deleted` marca `subscriptions.status='canceled'` (evita divergencia con `users.tier`).
+- [x] **DATA-01/03/04 · PAY-03** — ✅ `updatedAt` en `users`/`subscriptions`, índices en FKs, unique en `path_enrollments`, columna `provider` en `subscriptions`. **Requiere aplicar la migración `0003`.**
 
 ### P2 — Calidad, CI y observabilidad
 
-- [x] **QUAL-01** — ✅ CI en `.github/workflows/ci.yml`: `lint` + `typecheck` + `build` en push/PR a `main`; script `typecheck` añadido a `package.json`. **Pendiente manual:** activar branch protection en GitHub.
-- [ ] **QUAL-02** — Tests: Vitest + RTL (tier, progreso, content) y Playwright e2e. _(pendiente — requiere añadir runner y suite)_
-- [ ] **OBS-01** — Sentry (`instrumentation.ts` + `onRequestError`), logger estructurado. _(requiere cuenta/DSN de Sentry)_ Nota: el `catch {}` del webhook Stripe ya devuelve 400; falta el logging estructurado.
+- [x] **QUAL-01** — ✅ CI en `.github/workflows/ci.yml`: `lint` + `typecheck` + `test` + `build` en push/PR a `main`; scripts `typecheck`/`test` en `package.json`. **Pendiente manual:** activar branch protection en GitHub.
+- [x] **QUAL-02** — ✅ Vitest instalado + suite inicial (10 tests) para `lib/tiers` y `lib/rate-limit`. _(pendiente ampliar a content/webhooks y e2e Playwright)_
+- [~] **OBS-01** — Parcial: el `catch` de firma del webhook Stripe ya loggea. Sentry (`instrumentation.ts` + `onRequestError`) queda pendiente _(requiere cuenta/DSN)_.
 - [x] **OBS-02** — ✅ Endpoint `/api/health` con `SELECT 1` contra Neon (503 si no responde).
 - [x] **UI-01** — ✅ `app/global-error.tsx`, `app/not-found.tsx`, `(dashboard)/error.tsx`, `(dashboard)/loading.tsx`.
 - [x] **UI-02** — ✅ `MarkCompleteButton` comprueba `res.ok`, no marca completado si falla y ofrece reintentar.
 - [x] **SEC-11** — ✅ Headers HSTS/`X-Content-Type-Options`/`X-Frame-Options`/`Referrer-Policy`/`Permissions-Policy` en `next.config.ts`. **CSP pendiente** (requiere nonce por el JSON-LD inline).
 - [x] **SEO-01/SEO-02** — ✅ Dominio vía `NEXT_PUBLIC_SITE_URL` en `sitemap`/`robots`/`layout`; añadidos OpenGraph/Twitter/canonical en `layout.tsx`.
 
-> **Nota sobre items diferidos (requieren tu decisión o infraestructura):**
-> - **PAY-05** y los cambios de esquema (**DATA-01..05**) necesitan migración contra la BD de Neon de producción — no los apliqué para no tocar producción sin tu visto bueno.
-> - **SEC-04** necesita un store persistente (Upstash/Redis); un limitador en memoria no funciona bien en serverless.
-> - **OBS-01 (Sentry)** y **QUAL-02 (suite de tests)** requieren cuenta externa / decisión de alcance.
+> **⚠️ ACCIÓN REQUERIDA — aplicar migración `drizzle/0003_gap_analysis.sql`:**
+> El código de idempotencia (PAY-05) y las columnas nuevas (`provider`, `updatedAt`) dependen de esta migración. Es **aditiva y no destructiva** (`CREATE TABLE/INDEX IF NOT EXISTS`, `ADD COLUMN IF NOT EXISTS`). Aplicar con:
+> ```bash
+> DATABASE_URL="postgresql://..." npx drizzle-kit push
+> # o ejecutar el SQL de drizzle/0003_gap_analysis.sql directamente en Neon
+> ```
+> No la apliqué automáticamente para no modificar la BD de producción sin tu visto bueno. El helper `isNewWebhookEvent` degrada de forma segura si la tabla aún no existe (procesa el webhook y loggea), así que el deploy no se rompe si el orden se invierte.
+>
+> **Otros items que aún requieren infraestructura/decisión:**
+> - **SEC-04** — el limitador actual es en memoria (por-instancia). Para serverless robusto: migrar a Upstash/Redis.
+> - **OBS-01 (Sentry)** — requiere cuenta/DSN.
+> - **PAY-10 (reconciliación)** — requiere un cron.
+> - **QUAL-02** — ampliar la suite (content/webhooks) y añadir e2e Playwright.
+> - **DATA-02/05** (enums/CHECK, `timestamptz`) — pendientes; conviene consolidarlas en la próxima migración.
 
 ### P3 — Deuda técnica y pulido
 
@@ -232,6 +243,13 @@ _(nota: CONTENT-01 es crítico por rendimiento/DoS; el resto por seguridad/ingre
 - ✅ `next build` — exit 0. `/learn/[slug]` pasó de estático a **`ƒ` (Dynamic)**, confirmando que el gate se evalúa por request.
 - ⚠️ Warning pre-existente (no relacionado): hay dos lockfiles (`documents/bun.lock` y `meo-platform/package-lock.json`); Next infiere mal la raíz del workspace. Conviene fijar `turbopack.root` o eliminar el lockfile sobrante.
 - ⏳ **Pendiente manual:** rotar la contraseña de admin ya expuesta en el historial de git (SEC-08 solo la retiró del código actual).
+
+**Correcciones P1/P2 (2026-07-02, segundo lote):**
+- ✅ `vitest run` — 10/10 tests en verde.
+- ✅ `tsc --noEmit` — exit 0.
+- ✅ `eslint .` — 0 errores (15 warnings de deuda `no-explicit-any`).
+- ✅ `next build` — exit 0.
+- ⏳ **Pendiente manual:** aplicar la migración `drizzle/0003_gap_analysis.sql` (ver aviso arriba) y activar branch protection en `main`.
 
 ### 4.4 Notas de plataforma
 

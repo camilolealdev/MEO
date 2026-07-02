@@ -105,6 +105,7 @@ export async function handlePayPalWebhook(subscriptionId: string): Promise<void>
       .values({
         id: crypto.randomUUID(),
         userId,
+        provider: "paypal",
         stripeSubscriptionId: subscriptionId,
         stripePriceId: data.plan_id ?? tier,
         status,
