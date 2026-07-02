@@ -40,8 +40,11 @@ export async function POST(req: NextRequest) {
     if (parsed.type !== "preapproval" || !parsed.data?.id) {
       return NextResponse.json({ received: true });
     }
-    // Idempotencia por id de notificación (fallback al id del preapproval).
-    const eventId = String(parsed.id ?? parsed.data.id);
+    // Idempotencia por id de NOTIFICACIÓN (no por data.id): MP envía varias
+    // notificaciones para el mismo preapproval (alta, cambio, cancelación) con
+    // el mismo data.id, así que usarlo colapsaría eventos distintos y podría
+    // descartar un cambio de estado real. Sin id de notificación no se deduplica.
+    const eventId = parsed.id ? String(parsed.id) : "";
     if (!(await isNewWebhookEvent("mercadopago", eventId))) {
       return NextResponse.json({ received: true, duplicate: true });
     }

@@ -8,7 +8,7 @@ import { db } from "./db";
 import { users, accounts, sessions, verificationTokens } from "./schema";
 import { eq } from "drizzle-orm";
 import { authConfig } from "../auth.config";
-import { rateLimit } from "./rate-limit";
+import { rateLimit, getClientIp } from "./rate-limit";
 
 // Hash dummy (bcrypt de un valor aleatorio) para igualar el tiempo de respuesta
 // cuando el usuario no existe y evitar enumeración por temporización (SEC-05).
@@ -22,13 +22,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         email: { label: "Email", type: "email" },
         password: { label: "Password", type: "password" },
       },
-      async authorize(credentials) {
+      async authorize(credentials, request) {
         const email = credentials?.email as string | undefined;
         const password = credentials?.password as string | undefined;
         if (!email || !password) return null;
 
-        // Rate limit: 10 intentos por email cada 10 minutos (anti fuerza bruta).
-        if (!rateLimit(`login:${email.toLowerCase()}`, 10, 10 * 60 * 1000).ok) {
+        // Rate limit por IP (no por email): limitar por email permitiría a un
+        // atacante bloquear la cuenta de un tercero (lockout DoS). 20 intentos
+        // por IP cada 10 minutos frenan la fuerza bruta desde un mismo origen.
+        const ip = request instanceof Request ? getClientIp(request) : "unknown";
+        if (!rateLimit(`login:${ip}`, 20, 10 * 60 * 1000).ok) {
           return null;
         }
 

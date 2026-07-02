@@ -32,7 +32,15 @@ export function rateLimit(key: string, limit: number, windowMs: number): RateLim
   return { ok: true, retryAfter: 0 };
 }
 
-/** Extrae una IP de cliente razonable de las cabeceras del request. */
+/**
+ * Extrae una IP de cliente razonable de las cabeceras del request.
+ *
+ * ⚠️ `x-forwarded-for` es manipulable por el cliente: un atacante puede rotar
+ * el valor para obtener un bucket distinto por request y eludir el límite. En
+ * Vercel conviene usar la IP que inyecta la plataforma (no la parte controlable
+ * de XFF) y un store distribuido. Mitigación completa: SEC-04 con Upstash +
+ * fuente de IP de confianza. Esto es defensa básica interim.
+ */
 export function getClientIp(req: Request): string {
   const fwd = req.headers.get("x-forwarded-for");
   if (fwd) return fwd.split(",")[0]!.trim();

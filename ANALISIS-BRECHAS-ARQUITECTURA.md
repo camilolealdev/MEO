@@ -244,6 +244,11 @@ _(nota: CONTENT-01 es crítico por rendimiento/DoS; el resto por seguridad/ingre
 - ⚠️ Warning pre-existente (no relacionado): hay dos lockfiles (`documents/bun.lock` y `meo-platform/package-lock.json`); Next infiere mal la raíz del workspace. Conviene fijar `turbopack.root` o eliminar el lockfile sobrante.
 - ⏳ **Pendiente manual:** rotar la contraseña de admin ya expuesta en el historial de git (SEC-08 solo la retiró del código actual).
 
+**Hallazgos del security review del commit (2026-07-02, atendidos):**
+- ✅ **MP idempotencia — colisión de fallback:** se eliminó el fallback a `data.id` (el id del preapproval es estable entre eventos y colapsaba notificaciones distintas). Ahora solo se deduplica por id de notificación; sin él, se procesa.
+- ✅ **Account-lockout DoS en login:** el rate limit pasó de clave por email a clave por IP (evita que un tercero bloquee una cuenta ajena).
+- 🟡 **IP spoofing / bypass del limitador:** acotado. `x-forwarded-for` es manipulable; el limitador en memoria es defensa interina. Mitigación completa = SEC-04 con Upstash + IP de confianza (diferido).
+
 **Correcciones P1/P2 (2026-07-02, segundo lote):**
 - ✅ `vitest run` — 10/10 tests en verde.
 - ✅ `tsc --noEmit` — exit 0.
