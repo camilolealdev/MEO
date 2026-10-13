@@ -1,5 +1,7 @@
 # MEO — Marketing Engine Optimization Platform
 
+Creado y curado por [easy-marketing.xyz](https://easy-marketing.xyz). Licencia propietaria: ver [LICENSE](LICENSE).
+
 Plataforma de aprendizaje para profesionales de marketing digital. Contiene **120 frameworks de marketing** organizados en **6 rutas de aprendizaje** con modelo freemium y tres niveles de acceso.
 
 **Producción:** https://meo-steel.vercel.app  
