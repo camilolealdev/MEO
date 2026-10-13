@@ -5,7 +5,7 @@ import type { NextAuthRequest } from "next-auth";
 
 const { auth } = NextAuth(authConfig);
 
-const PUBLIC_PATHS = ["/", "/curso", "/precios", "/login", "/register"];
+const PUBLIC_PATHS = ["/", "/curso", "/precios", "/login", "/register", "/forgot-password", "/reset-password"];
 const ADMIN_PATH = /^\/admin/;
 
 export default auth((req: NextAuthRequest) => {

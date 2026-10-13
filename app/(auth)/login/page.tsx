@@ -118,6 +118,9 @@ export default function LoginPage() {
             className="w-full py-3 rounded-xl bg-gradient-meo text-white font-bold hover:opacity-90 disabled:opacity-50">
             {loading ? "Entrando..." : "Entrar con contraseña"}
           </button>
+          <p className="text-center text-xs">
+            <Link href="/forgot-password" className="text-violet-600 hover:underline">¿Olvidaste tu contraseña?</Link>
+          </p>
         </form>
       ) : (
         <form onSubmit={handleMagicLinkSignIn} className="space-y-4">
