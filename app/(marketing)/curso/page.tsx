@@ -28,7 +28,7 @@ export default function CursoPage() {
     <div className="max-w-6xl mx-auto px-6 py-24">
       <div className="text-center mb-16">
         <h1 className="font-display font-bold text-5xl text-gray-900 mb-4">
-          Los <span className="gradient-text">117 frameworks</span> MEO
+          Los <span className="gradient-text">120 frameworks</span> MEO
         </h1>
         <p className="text-xl text-gray-500 max-w-xl mx-auto">
           El catálogo completo del sistema Marketing Engine Optimization.

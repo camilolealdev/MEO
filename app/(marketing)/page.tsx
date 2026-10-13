@@ -11,7 +11,7 @@ export default function HomePage() {
     "@context": "https://schema.org",
     "@type": "Course",
     name: "MEO — Marketing Engine Optimization",
-    description: "Sistema completo de 117 frameworks de marketing digital integrado con IA.",
+    description: "Sistema completo de 120 frameworks de marketing digital integrado con IA.",
     provider: { "@type": "Organization", name: "MEO", url: "https://meo.com" },
     offers: [
       { "@type": "Offer", price: "0", priceCurrency: "USD", name: "Explorer" },
@@ -59,7 +59,7 @@ export default function HomePage() {
         </h2>
         <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
           {[
-            { value: "117", label: "Frameworks integrados" },
+            { value: "120", label: "Frameworks integrados" },
             { value: "981+", label: "Páginas de contenido" },
             { value: "6", label: "Rutas guiadas" },
             { value: "+250%", label: "ROI promedio 12 meses" },

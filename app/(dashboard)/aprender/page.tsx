@@ -10,7 +10,7 @@ export default async function AprenderPage() {
   return (
     <div className="p-8 max-w-6xl">
       <h1 className="font-display font-bold text-3xl text-gray-900 mb-2">Explorar Frameworks</h1>
-      <p className="text-gray-500 mb-8">Los 117 frameworks del sistema MEO.</p>
+      <p className="text-gray-500 mb-8">Los 120 frameworks del sistema MEO.</p>
 
       <div className="space-y-10">
         <div>

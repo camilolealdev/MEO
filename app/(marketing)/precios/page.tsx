@@ -29,7 +29,7 @@ const PLANS: Plan[] = [
     priceId: process.env.NEXT_PUBLIC_STRIPE_PRICE_PRO,
     highlighted: true,
     features: [
-      "117 frameworks completos",
+      "120 frameworks completos",
       "6 rutas guiadas temáticas",
       "Quizzes de comprensión",
       "Certificados por ruta",
@@ -114,7 +114,7 @@ export default function PreciosPage() {
           Elige tu <span className="gradient-text">nivel MEO</span>
         </h1>
         <p className="text-xl text-gray-500 max-w-xl mx-auto">
-          Desde explorar los fundamentos hasta dominar los 117 frameworks.
+          Desde explorar los fundamentos hasta dominar los 120 frameworks.
         </p>
       </div>
 
