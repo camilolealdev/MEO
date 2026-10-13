@@ -12,6 +12,9 @@ export function Footer() {
           <Link href="/login" className="hover:text-gray-900">Acceder</Link>
         </div>
       </div>
+      <p className="max-w-6xl mx-auto px-6 mt-6 text-xs text-gray-400 text-center">
+        Los nombres de modelos, marcas y herramientas citados pertenecen a sus respectivos titulares; MEO no tiene afiliación con ellos. Contenido educativo, no asesoría legal ni financiera. Las cifras de terceros pueden no estar verificadas.
+      </p>
     </footer>
   );
 }
