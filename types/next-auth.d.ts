@@ -20,5 +20,6 @@ declare module "next-auth/jwt" {
     id: string;
     tier: "free" | "pro" | "agency";
     role: "user" | "admin";
+    refreshedAt?: number;
   }
 }

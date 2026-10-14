@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { handlePayPalWebhook } from "@/lib/paypal";
+import { isNewWebhookEvent } from "@/lib/webhook-events";
 
 const PAYPAL_API =
   process.env.PAYPAL_MODE === "live"
@@ -19,7 +20,14 @@ const RELEVANT_EVENTS = new Set([
 
 async function verifyPayPalSignature(req: NextRequest, body: string): Promise<boolean> {
   const webhookId = process.env.PAYPAL_WEBHOOK_ID;
-  if (!webhookId) return true;
+  if (!webhookId) {
+    // Fail-closed en producción (ver webhook de MercadoPago para el razonamiento).
+    if (process.env.NODE_ENV === "production") {
+      console.error("PAYPAL_WEBHOOK_ID no está configurado — webhook rechazado");
+      return false;
+    }
+    return true;
+  }
 
   const authAlgo = req.headers.get("paypal-auth-algo") ?? "";
   const certUrl = req.headers.get("paypal-cert-url") ?? "";
@@ -77,6 +85,7 @@ export async function POST(req: NextRequest) {
     }
 
     const parsed = JSON.parse(body) as {
+      id?: string;
       event_type?: string;
       resource?: { id?: string };
     };
@@ -90,6 +99,11 @@ export async function POST(req: NextRequest) {
 
     if (!RELEVANT_EVENTS.has(eventType)) {
       return NextResponse.json({ received: true });
+    }
+
+    // Idempotencia por id de evento de PayPal.
+    if (!(await isNewWebhookEvent("paypal", parsed.id ?? ""))) {
+      return NextResponse.json({ received: true, duplicate: true });
     }
 
     await handlePayPalWebhook(subscriptionId);

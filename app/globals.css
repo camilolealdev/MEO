@@ -70,4 +70,42 @@
   .bg-gradient-meo {
     background: linear-gradient(135deg, #7C3AED, #06B6D4, #84CC16);
   }
+
+  /* Acento por categoría de framework (lib/fw-theme.ts define --fw-acc*) */
+  .fw-acc-text {
+    color: var(--fw-acc, #6D28D9);
+  }
+  .fw-acc-bg {
+    background-color: var(--fw-acc-soft, #F5F3FF);
+  }
+  .fw-acc-border {
+    border-color: var(--fw-acc-border, #DDD6FE);
+  }
+  .fw-acc-bar {
+    border-color: var(--fw-acc, #6D28D9);
+  }
+  .fw-acc-bar-soft {
+    background-color: var(--fw-acc, #6D28D9);
+  }
+  /* Marcadores de lista con el acento de la categoría */
+  .fw-body ul,
+  .fw-body ol {
+    marker-color: var(--fw-acc, #6D28D9);
+  }
+}
+
+@layer components {
+  /* Párrafo que es solo texto en negrita (patrón **TÍTULO** de los MDX):
+     se trata como subtítulo interno con el acento de la categoría. */
+  .fw-body p > strong:first-child:last-child {
+    display: block;
+    margin-top: 1.75rem;
+    margin-bottom: 0.5rem;
+    font-family: var(--font-display), sans-serif;
+    font-weight: 700;
+    font-size: 0.8125rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--fw-acc, #6D28D9);
+  }
 }

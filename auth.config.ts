@@ -16,9 +16,9 @@ export const authConfig = {
     },
     session({ session, token }) {
       if (session.user) {
-        session.user.id = token.id as string;
-        session.user.tier = (token as any).tier ?? "free";
-        session.user.role = (token as any).role ?? "user";
+        session.user.id = token.id;
+        session.user.tier = token.tier ?? "free";
+        session.user.role = token.role ?? "user";
       }
       return session;
     },

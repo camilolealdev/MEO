@@ -1,6 +1,6 @@
 import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { users, subscriptions, progress } from "@/lib/schema";
+import { progress } from "@/lib/schema";
 
 export default async function AdminPage() {
   const session = await auth();

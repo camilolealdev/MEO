@@ -1,8 +1,11 @@
 "use client";
 import { motion } from "framer-motion";
 import Link from "next/link";
+import type { CSSProperties } from "react";
 import { cn } from "@/lib/utils";
 import type { FrameworkMeta } from "@/lib/content";
+import { hasAccess, TIER_LABELS, type Tier } from "@/lib/tiers";
+import { getAccent, accentVars } from "@/lib/fw-theme";
 import { Clock, Lock } from "lucide-react";
 
 const TIER_COLORS = {
@@ -11,23 +14,15 @@ const TIER_COLORS = {
   agency: "text-cyan-600 bg-cyan-50 border-cyan-200",
 };
 
-const TIER_LABELS = {
-  free: "Explorer",
-  pro: "Practitioner",
-  agency: "Orchestrator",
-};
-
-const TIER_ORDER = { free: 0, pro: 1, agency: 2 };
-
 interface FrameworkCardProps {
   framework: FrameworkMeta;
-  userTier: "free" | "pro" | "agency";
+  userTier: Tier;
   completed?: boolean;
   index?: number;
 }
 
 export function FrameworkCard({ framework, userTier, completed = false, index = 0 }: FrameworkCardProps) {
-  const isLocked = TIER_ORDER[userTier] < TIER_ORDER[framework.tier];
+  const isLocked = !hasAccess(userTier, framework.tier);
 
   return (
     <motion.div
@@ -35,15 +30,16 @@ export function FrameworkCard({ framework, userTier, completed = false, index = 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: (index % 6) * 0.05 }}
+      style={accentVars(getAccent(framework.category)) as CSSProperties}
       className={cn(
-        "relative group rounded-xl p-5 border bg-white transition-all duration-200",
+        "relative group rounded-xl p-5 border bg-white transition-all duration-200 h-full",
         "hover:shadow-lg hover:-translate-y-0.5",
         completed && "tier-gradient-border",
         isLocked && "opacity-60"
       )}
     >
       <div className="flex items-start justify-between mb-3">
-        <span className="text-3xl font-display font-bold text-gray-100 select-none">
+        <span className="text-3xl font-display font-bold fw-acc-bg select-none rounded-lg px-1.5">
           #{String(framework.number).padStart(2, "0")}
         </span>
         <div className="flex items-center gap-2">
@@ -63,7 +59,7 @@ export function FrameworkCard({ framework, userTier, completed = false, index = 
           <Clock className="w-3.5 h-3.5" />
           {framework.estimatedMinutes} min
         </span>
-        <span className="capitalize">{framework.category.replace(/-/g, " ")}</span>
+        <span className="capitalize fw-acc-text font-medium">{framework.category.replace(/-/g, " ")}</span>
       </div>
       {isLocked ? (
         <div className="mt-4 flex items-center gap-2 text-sm text-gray-400">
@@ -73,7 +69,7 @@ export function FrameworkCard({ framework, userTier, completed = false, index = 
       ) : (
         <Link
           href={`/learn/${framework.slug}`}
-          className="mt-4 flex items-center gap-1 text-sm font-medium text-violet-600 hover:text-violet-700"
+          className="mt-4 flex items-center gap-1 text-sm font-medium fw-acc-text hover:opacity-75 transition-opacity"
         >
           {completed ? "Repasar framework" : "Comenzar"} →
         </Link>

@@ -33,7 +33,7 @@ export function Sidebar() {
             </Link>
           );
         })}
-        {(session?.user as any)?.role === "admin" && (
+        {session?.user?.role === "admin" && (
           <Link href="/admin"
             className={cn("flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-medium transition-all",
               pathname.startsWith("/admin") ? "bg-violet-50 text-violet-700" : "text-gray-600 hover:bg-gray-50 hover:text-gray-900")}>
@@ -48,7 +48,7 @@ export function Sidebar() {
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-sm font-medium text-gray-900 truncate">{session?.user?.name ?? "Usuario"}</p>
-            <p className="text-xs text-gray-400 capitalize">{(session?.user as any)?.tier ?? "free"}</p>
+            <p className="text-xs text-gray-400 capitalize">{session?.user?.tier ?? "free"}</p>
           </div>
         </div>
         <button onClick={() => signOut({ callbackUrl: "/" })}

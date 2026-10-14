@@ -9,8 +9,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
     const { priceId } = await req.json();
-    if (!priceId) {
-      return NextResponse.json({ error: "Missing priceId" }, { status: 400 });
+    // Solo se aceptan los price IDs conocidos. Un priceId arbitrario del cliente
+    // no debe poder disparar un checkout (ni terminar otorgando un tier por defecto).
+    const allowedPriceIds = [
+      process.env.STRIPE_PRICE_PRO,
+      process.env.STRIPE_PRICE_AGENCY,
+    ].filter(Boolean);
+    if (!priceId || !allowedPriceIds.includes(priceId)) {
+      return NextResponse.json({ error: "Invalid priceId" }, { status: 400 });
     }
     const checkoutSession = await createCheckoutSession(session.user.id, priceId, session.user.email!);
     return NextResponse.json({ url: checkoutSession.url });

@@ -29,7 +29,7 @@ export default auth((req: NextAuthRequest) => {
   }
 
   // Defense-in-depth: admin role stored in JWT at sign-in via lib/auth.ts jwt callback
-  if (ADMIN_PATH.test(path) && (session.user as any)?.role !== "admin") {
+  if (ADMIN_PATH.test(path) && session.user?.role !== "admin") {
     return NextResponse.redirect(new URL("/dashboard", req.url));
   }
 
