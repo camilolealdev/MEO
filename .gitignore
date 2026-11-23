@@ -46,6 +46,7 @@ next-env.d.ts
 .vercel
 
 # agent config dirs
+.claude/
 .codex/
 .cursor/
 .gemini/

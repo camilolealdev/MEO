@@ -19,15 +19,15 @@ export function FwTable({ as: Tag = "table", className, headers, rows }: FwTable
       )}
     >
       {Tag === "div" ? (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 text-left" role="table">
           {headers.map((h, i) => (
-            <div key={i} className="text-xs uppercase tracking-wider text-gray-500 font-medium">
+            <div key={i} role="columnheader" className="text-xs uppercase tracking-wider text-gray-500 font-medium">
               {h}
             </div>
           ))}
           {rows.map((row, ri) =>
             row.map((cell, ci) => (
-              <div key={`${ri}-${ci}`} className="pt-2 border-t border-gray-100 first:border-t-0">
+              <div key={`${ri}-${ci}`} role="cell" className="pt-2 border-t border-gray-100 first:border-t-0">
                 {cell}
               </div>
             ))
@@ -39,6 +39,7 @@ export function FwTable({ as: Tag = "table", className, headers, rows }: FwTable
             {headers.map((h, i) => (
               <th
                 key={i}
+                scope="col"
                 className="text-xs uppercase tracking-wider text-gray-500 font-semibold pb-2 pr-4 border-b border-gray-200 whitespace-nowrap"
               >
                 {h}
