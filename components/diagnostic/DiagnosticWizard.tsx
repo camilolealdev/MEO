@@ -1,17 +1,10 @@
 'use client';
 
 import { useMemo, useState } from 'react';
+import type { DiagnosticFramework } from '@/lib/diagnostic';
 
 type Choice = { value: string; label: string; hint?: string };
 
-type Framework = {
-  slug: string;
-  title: string;
-  reason: string;
-  evidence: 'Alta' | 'Media';
-  updatedAt: string;
-  tags: string[];
-};
 
 const choices = {
   objective: [
@@ -40,22 +33,7 @@ const choices = {
   ],
 } satisfies Record<string, Choice[]>;
 
-const frameworkCatalog: Framework[] = [
-  { slug: 'sostac-framework', title: 'SOSTAC', reason: 'Ordena el diagnóstico, los objetivos, la estrategia y el plan de acción.', evidence: 'Alta', updatedAt: '2026-11', tags: ['clarity', 'plan', 'growth'] },
-  { slug: 'race-framework', title: 'RACE', reason: 'Convierte el recorrido de adquisición a fidelización en etapas medibles.', evidence: 'Alta', updatedAt: '2026-11', tags: ['visibility', 'conversion', 'retention', 'measurement'] },
-  { slug: 'seo-search-engine-optimization', title: 'SEO', reason: 'Mejora la capacidad de ser encontrado cuando existe una demanda concreta.', evidence: 'Alta', updatedAt: '2026-11', tags: ['visibility', 'organic', 'measurement'] },
-  { slug: 'aeo-answer-engine-optimization', title: 'AEO', reason: 'Ayuda a estructurar respuestas útiles y verificables para búsquedas con IA.', evidence: 'Alta', updatedAt: '2026-11', tags: ['visibility', 'organic', 'clarity'] },
-  { slug: 'jobs-to-be-done-jtbd', title: 'Jobs to Be Done', reason: 'Aclara el progreso que la persona intenta conseguir y qué mensaje necesita.', evidence: 'Alta', updatedAt: '2026-11', tags: ['audience', 'clarity', 'conversion'] },
-  { slug: 'stp-segmentation-targeting-positioning', title: 'STP', reason: 'Ayuda a elegir segmentos prioritarios y una posición defendible.', evidence: 'Alta', updatedAt: '2026-11', tags: ['audience', 'plan', 'clarity'] },
-  { slug: 'funnel-de-ventas-tradicional', title: 'Embudo de conversión', reason: 'Localiza dónde se pierde la demanda y qué experiencia debe mejorarse.', evidence: 'Media', updatedAt: '2026-11', tags: ['conversion', 'measurement', 'product'] },
-  { slug: 'data-analytics-frameworks', title: 'Data Analytics', reason: 'Conecta preguntas de negocio, eventos, métricas y decisiones.', evidence: 'Alta', updatedAt: '2026-11', tags: ['measurement', 'optimize', 'growth'] },
-  { slug: 'imc-integrated-marketing-communications', title: 'IMC', reason: 'Alinea el mensaje, la audiencia y la ejecución entre canales.', evidence: 'Alta', updatedAt: '2026-11', tags: ['coordination', 'relationship', 'growth'] },
-  { slug: 'customer-retention-framework', title: 'Retención de clientes', reason: 'Convierte señales de uso y satisfacción en acciones de permanencia.', evidence: 'Media', updatedAt: '2026-11', tags: ['retention', 'relationship', 'measurement'] },
-  { slug: 'customer-feedback-loop-framework', title: 'Bucle de feedback', reason: 'Cierra el ciclo entre señales de clientes, aprendizaje y mejora.', evidence: 'Alta', updatedAt: '2026-11', tags: ['retention', 'product', 'audience', 'optimize'] },
-  { slug: 'agile-marketing-framework', title: 'Agile Marketing', reason: 'Permite priorizar experimentos, aprender rápido y coordinar entregas.', evidence: 'Alta', updatedAt: '2026-11', tags: ['optimize', 'coordination', 'growth'] },
-];
-
-function recommendations(values: Record<string, string>): Framework[] {
+function recommendations(values: Record<string, string>, frameworkCatalog: DiagnosticFramework[]): DiagnosticFramework[] {
   const ranked = frameworkCatalog.map((framework, index) => {
     let score = 0;
     if (framework.tags.includes(values.objective)) score += 5;
@@ -96,11 +74,11 @@ function Question({ id, legend, options, value, onChange }: { id: string; legend
   );
 }
 
-export default function DiagnosticWizard() {
+export default function DiagnosticWizard({ frameworks }: { frameworks: DiagnosticFramework[] }) {
   const [values, setValues] = useState<Record<string, string>>({});
   const [submitted, setSubmitted] = useState(false);
   const complete = Object.keys(choices).every((key) => values[key]);
-  const result = useMemo(() => (complete ? recommendations(values) : []), [complete, values]);
+  const result = useMemo(() => (complete ? recommendations(values, frameworks) : []), [complete, frameworks, values]);
 
   const setValue = (key: string, value: string) => {
     setSubmitted(false);

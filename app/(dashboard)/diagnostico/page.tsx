@@ -1,4 +1,6 @@
 import DiagnosticWizard from '@/components/diagnostic/DiagnosticWizard';
+import { buildDiagnosticCatalog } from '@/lib/diagnostic';
+import { getAllFrameworks } from '@/lib/content';
 
 export const metadata = {
   title: 'Diagnóstico de ruta | MEO',
@@ -6,5 +8,5 @@ export const metadata = {
 };
 
 export default function DiagnosticoPage() {
-  return <DiagnosticWizard />;
+  return <DiagnosticWizard frameworks={buildDiagnosticCatalog(getAllFrameworks())} />;
 }
