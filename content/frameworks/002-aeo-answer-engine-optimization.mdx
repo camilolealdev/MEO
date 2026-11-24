@@ -7,266 +7,57 @@ tier: "free"
 estimatedMinutes: 45
 paths: ["seo-total"]
 resources:
-  - title: "Blog oficial de Google Search"
-    url: "https://developers.google.com/search/blog"
-    desc: "Novedades de Búsqueda y la Search API"
-  - title: "Wikipedia: Large language model"
-    url: "https://en.wikipedia.org/wiki/Large_language_model"
+  - title: "AI features and your website — Google Search Central"
+    url: "https://developers.google.com/search/docs/appearance/ai-features"
+  - title: "Optimizing for generative AI features — Google Search Central"
+    url: "https://developers.google.com/search/docs/fundamentals/ai-optimization-guide"
+  - title: "Search Essentials — Google Search Central"
+    url: "https://developers.google.com/search/docs/essentials"
 ---
 
-## Definición base
-
-### Definición
-Optimización de contenido para capturar respuestas directas en buscadores (featured snippets, Position Zero, Google AI Overviews y AI Mode). AEO asegura que tu contenido aparezca como respuesta inmediata o como cita dentro del resumen generado, cuando alguien busca.
-
-### Propósito Principal
-Capturar visibilidad y citas en featured snippets, People Also Ask, AI Overviews y AI Mode. Google no exige un marcado especial ni una optimización separada para estas funciones: la elegibilidad sigue dependiendo de los fundamentos de Search, la indexabilidad, el contenido útil y la calidad de la página.
-
-### Pilares Principales
-1. **Featured Snippet Optimization**: Formato respuesta (40-60 palabras)
-2. **Datos estructurados cuando correspondan**: usar el marcado válido para la función de búsqueda, sin asumir que crea una ventaja específica en AI Overviews o AI Mode
-3. **AI Overview / AI Mode Citation Strategy**: Estructurar contenido citable dentro de resúmenes generativos, no solo para el clic
-4. **People Also Ask (PAA)**: Posicionar en preguntas relacionadas
-5. **Voice Search Readiness**: Respuestas conversacionales
-
-### Métricas Clave
-- % keywords con featured snippet o AI Overview (meta: >25%)
-- Presencia/citas en AI Overviews (+50%/mes)
-- CTR en queries con AI Overview (referencia: ronda 2-3% tras la caída y recuperación observada en 2025-2026, vs. 8-12% en snippets clásicos)
-- PAA appearance rate (>20%)
-- Zero-click traffic volume
-
-### Herramientas Principales
-- SEMrush Featured Snippet Tool
-- Ahrefs SERP Features
-- AnswerThePublic
-- AlsoAsked
-- Herramientas especializadas de AI visibility (Profound, Otterly.ai, Scrunch, Peec AI)
-- Schema.org Validator
-
-### ROI Típico
-+40% featured snippets/citas en IA, +30% voice search traffic (compensando parcialmente la caída de CTR orgánico en queries con AI Overview)
-
-### Timeline de Resultados
-- Quick wins: 1-2 semanas
-- Full coverage: 3-4 meses
-- Optimization plateau: 6+ meses
----
-
----
-
-## Desarrollo desde fuentes locales
-
-### Fuente: MEO-51-KPIS-DETALLADO
-
-**DEFINICIÓN TÉCNICA**
-Optimización de contenido para capturar respuestas directas en buscadores (featured snippets, Position Zero, Google AI Overview), asistentes virtuales (Alexa, Google Assistant, Siri), y engines de respuesta (Perplexity).
-
-**ORIGEN E HISTORIA**
-- Año: 2020 (con rise de conversational search)
-- Evolución: Featured snippets → Google AI Overview (2024) → Multi-modal answers (2025)
-- Hito 2025: Optimización para SGE y AI Overviews
-
-**INTEGRACIÓN EN MEO**
-- **Upstream**: AEO proporciona contenido estructurado a LLMO
-- **Lateral**: Complementa SEO tradicional con focus en respuestas directas
-- **Downstream**: Tráfico desde snippets va a landing pages optimizadas con UXO/SXO
-
-**APLICACIÓN PRÁCTICA**
-
-Fase 1: Identificación (Semana 1-2)
-- Analizar SERPs para 200+ keywords target
-- Identificar qué keywords ya tienen featured snippets
-- Usar AnswerThePublic para descubrir preguntas comunes
-- Usar AlsoAsked para mapear People Also Ask
-
-Fase 2: Optimización de Snippets Existentes (Semana 2-3)
-- Para keywords SIN snippet: Crear contenido en formato snippet
-- Para keywords CON snippet DE COMPETENCIA: Mejorar contenido propio
-- Formatos optimizados:
-  - Definiciones: "X es..." (40-60 palabras)
-  - Listas: 5-10 items numerados o bulletpoints
-  - Tablas: Comparativas claras
-  - Párrafos: 40-60 palabras con respuesta directa al inicio
-
-Fase 3: Schema Markup Implementación (Semana 3-4)
-- FAQ Schema: Mínimo 10 pares pregunta/respuesta
-- How-To Schema: Procesos paso a paso (min 3 steps)
-- QAPage Schema: Para páginas de preguntas/respuestas
-- Article Schema: Para blogs con autores, fechas, imagenes
-
-Fase 4: Optimización para Voz (Semana 4-5)
-- Contenido conversacional natural
-- Respuestas a preguntas comunes en conversación (10-15 palabras)
-- Optimizar para "near me" queries
-- Incluir variaciones de preguntas
-
-Fase 5: Monitoreo y Optimización Continua (Semana 5+)
-- Rastrear featured snippets diariamente
-- Analizar Click-Through Rate desde snippets
-- A/B testing de formatos
-- Optimizar basado en Google Analytics data
-
-**KPIS Y MÉTRICAS CLAVE**
-
-Featured Snippets:
-- % keywords con snippet capturado (meta: >25%)
-- Featured snippet impressions: +50% mes a mes
-- Featured snippet CTR: >8% (benchmark)
-- Position 0 visibility: Trending up month-to-month
-
-People Also Ask:
-- % keywords con presencia en PAA (meta: >20%)
-- PAA click-through rate: >5%
-- PAA to organic funnel conversion: Track users who clicked PAA then converted
+## Definición
 
-Zero-Click Traffic:
-- Tráfico satisfecho sin clic: % de queries satisfechas en SERP
-- Zero-click to click conversion: % que eventualmente clican
-- Average time to click: Dias entre zero-click y organic click
+AEO es una lente editorial y técnica para presentar respuestas claras en superficies de búsqueda que muestran extractos, preguntas relacionadas o respuestas generativas. Incluye formatos legibles, preguntas bien delimitadas, contexto suficiente y una página que pueda rastrearse e indexarse. No es un requisito separado de Google ni garantiza una cita.
 
-Voice Search:
-- Voice search impressions: Tracked via GA4 events
-- Voice search conversion rate: Compare vs text search
-- Smart speaker traffic: Attributable to Alexa/Google Home
+## Propósito
 
-AI Overview:
-- Appearances en Google AI Overview: Tracked daily (contexto 2026: AI Overviews aparecen en ~30-48% (rango según fuente; Google no publica cifra oficial) de queries de Google)
-- CTR desde AI Overview: >6% (compresión general de CTR orgánico en queries con AI Overview: ~25% menos (estimado), con recuperación parcial 2025→2026)
-- Attribution accuracy: Revenue from AI Overview visitors
+Hacer que una respuesta sea fácil de encontrar, entender, extraer y verificar sin sacrificar el contexto que necesita la persona para decidir.
 
-**HERRAMIENTAS RECOMENDADAS**
-- SEMrush Featured Snippet Tool (tracking + optimization)
-- Ahrefs SERP Features (visibility data)
-- AnswerThePublic (question discovery)
-- AlsoAsked (PAA insights)
-- Profound, Otterly.ai, Scrunch, Peec AI (AEO/GEO/LLMO visibility tracking, líderes 2026)
-- Schema.org Validator (schema verification)
-- Google Search Console (official data)
-- Rank Tracker (position monitoring)
+## Cuándo usarlo
 
-**ROI DOCUMENTADO**
-+40% featured snippet keywords en 3 meses
-+30% tráfico desde respuestas directas
-+25% click-through rate improvement
+- Cuando una página responde preguntas concretas o tareas recurrentes.
+- Al mejorar contenido que aparece en resultados enriquecidos, preguntas relacionadas o respuestas generativas.
+- Para diseñar una arquitectura de preguntas y respuestas conectada con páginas completas.
 
-**COMPLEJIDAD**
-Intermedia (requiere content writing + schema understanding)
+## Pasos
 
-**TIMELINE**
-- Quick wins: 1-2 semanas
-- Significant snippets: 4-6 semanas
-- Full coverage: 3-4 meses
+1. Identificar preguntas reales y la intención detrás de cada una.
+2. Responder de forma directa al inicio y desarrollar contexto, límites y evidencia después.
+3. Usar títulos, listas, tablas y definiciones semánticas solo cuando aclaren la lectura.
+4. Añadir datos estructurados válidos únicamente cuando representen el contenido visible y la función correspondiente.
+5. Comprobar rastreo, indexación, enlaces y representación móvil.
+6. Medir consultas, impresiones, clics, conversiones y menciones observadas; registrar fecha y método de observación.
 
-**SINERGIAS CON OTROS FRAMEWORKS**
-- AEO ↔ SEO: Snippets improve organic visibility
-- AEO ↔ LLMO: Structured answers fed to LLM training
-- AEO ↔ Content Marketing: FAQ creation aligned with content strategy
-- AEO ↔ CRO: Snippet traffic optimized for conversion
+## KPIs
 
----
+- Impresiones, clics y CTR de las consultas objetivo.
+- Presencia en funciones de búsqueda, documentada con consulta, país, dispositivo y fecha.
+- Clics y conversiones de páginas que responden preguntas.
+- Porcentaje de preguntas cubiertas con una respuesta verificable.
+- Errores de datos estructurados y páginas excluidas de indexación.
 
----
+No fijes porcentajes universales de snippets, citas, CTR o tráfico de voz: las superficies cambian y los datos no son comparables sin una metodología constante.
 
-### Fuente: MEO-2025-Sistema-Completo
+## Límites
 
-**Definición y Propósito**
-Optimización específica para capturar posición cero (featured snippets, AI Overviews, respuestas directas), resultados en asistentes virtuales (Alexa, Google Assistant, Siri), y respuestas estructuradas en motores generativos.
+Google indica que no se necesita un marcado especial ni un archivo `llms.txt` para las funciones generativas. Cumplir las prácticas no garantiza rastreo, indexación, aparición o citación. No reduzcas una respuesta a frases aisladas ni uses contenido creado solo para manipular una función.
 
-**Técnicas Avanzadas 2025**
+## Conexiones
 
-- **Featured Snippet Optimization**: Respuestas concisas (40-60 palabras) con formato "is statement" para definiciones, listas numeradas para procesos, tablas para comparativas, párrafos estructurados para explicaciones.
+Se deriva de SEO, se complementa con LLMO y AI visibility measurement, y necesita UXO/SXO para que la respuesta conduzca a una tarea útil.
 
-- **Natural Language Processing (NLP)**: Creación de contenido que responda a preguntas conversacionales de 10-11 palabras promedio, usando sinónimos naturales y variaciones long-tail de keywords.
+## Fuentes
 
-- **Schema Markup FAQ/How-To/QAPage**: Implementación de schema avanzada para señalar preguntas, respuestas, procedimientos, facilitando extracción por buscadores y LLMs.
-
-- **Zero-Click Content Strategy**: Contenido que satisface completamente la query sin requerir clic, pero optimizado para generar tráfico secundario a contenido complementario.
-
-- **People Also Ask Optimization**: Posicionamiento en secciones PAA generando contenido específico para preguntas relacionadas que Google identifica automáticamente.
-
-- **Conversational Optimization**: Formato de contenido que anticipe objeciones, preguntas secundarias y necesidades contextuales del usuario conversacional.
-
-**Contexto 2026**: Los AI Overviews de Google ya aparecen en aproximadamente 30-48% (rango según fuente; Google no publica cifra oficial) de las queries, comprimiendo el CTR orgánico tradicional (~25% menos (estimado) en queries con AI Overview presente, con una recuperación parcial 2025→2026 conforme los usuarios se adaptan a los enlaces citados dentro del resumen). Esto hace que AEO sea disciplina central, no complementaria.
-
-**Métricas Clave**
-- % de keywords posicionados en featured snippets / AI Overviews
-- Apariciones en People Also Ask (objetivo >20% keywords)
-- CTR desde resultados enriquecidos (benchmark >8%, ajustado a la baja en queries con AI Overview)
-- Tráfico proveniente de asistentes virtuales/AI-generated answers
-- Frecuencia de renovación de snippets (cambios positivos)
-
-**Herramientas Recomendadas 2026**
-- Profound (AEO/GEO visibility tracking en LLMs)
-- Otterly.ai (monitoreo de menciones en AI Overviews y chatbots)
-- Scrunch (AI search analytics)
-- Peec AI (tracking de citaciones en motores generativos)
-- AnswerThePublic (preguntas relacionadas)
-- AlsoAsked (People Also Ask tracking)
-
----
-
----
-
-### Fuente: MEO-51-FRAMEWORKS-COMPLETO
-
-**ROI**: +40% featured snippets | **Integración**: TOFU capture | **Complejidad**: Intermedia
-
-**Técnicas Clave**:
-- Featured Snippet Optimization
-- Zero-Click Content
-- Conversational Optimization
-- Schema FAQ/How-To
-
----
-
-## Guía operativa MEO
-
-Este bloque convierte la informacion local anterior en una secuencia accionable para la plataforma.
-
-### Propósito dentro del sistema
-
-AEO - Answer Engine Optimization funciona como modulo de visibilidad, citabilidad, autoridad y trafico cualificado. En MEO no debe quedar como concepto aislado: debe conectarse con adquisicion, experiencia, datos y optimizacion continua.
-
-### Aplicación práctica
-
-1. Definir objetivo principal del framework y el resultado de negocio esperado.
-2. Levantar baseline: estado actual, canales implicados, activos disponibles y brechas.
-3. Mapear dependencias MEO: frameworks previos, datos necesarios, herramientas y responsables.
-4. Ejecutar un sprint inicial de 2 a 4 semanas con entregables visibles.
-5. Medir avance con KPIs semanales y documentar aprendizajes.
-6. Integrar lo que funcione a la ruta seo-total y escalarlo como proceso repetible.
-
-### KPIs sugeridos
-
-- Impacto principal: mejora porcentual contra baseline del objetivo definido.
-- Velocidad de implementacion: dias desde diagnostico hasta primera ejecucion medible.
-- Calidad del activo: completitud, consistencia y cumplimiento del checklist MEO.
-- Contribucion al funnel: trafico, engagement, conversion, retencion o eficiencia segun el caso.
-- Sinergia: numero de frameworks MEO conectados con datos, contenido o automatizacion.
-
-### Entregables minimos
-
-- Diagnostico inicial y matriz de oportunidades.
-- Checklist de implementacion por canal o activo.
-- Dashboard simple con baseline, meta, avance y proximo experimento.
-- Retro semanal con aprendizajes, bloqueos y siguiente iteracion.
-
-
----
-
-## Quiz
-
-1. Cual es el objetivo principal de AEO - Answer Engine Optimization dentro del sistema MEO?
-2. Que dos KPIs usarias para saber si este framework esta generando impacto real?
-3. Con que otro framework MEO lo combinarias primero y por que?
-
-
----
-
-## Fuentes locales usadas
-
-- 116-FRAMEWORKS-DEFINICIONES
-- MEO-51-KPIS-DETALLADO
-- MEO-2025-Sistema-Completo
-- MEO-51-FRAMEWORKS-COMPLETO
+- [AI features and your website — Google Search Central](https://developers.google.com/search/docs/appearance/ai-features)
+- [Optimizing for generative AI features — Google Search Central](https://developers.google.com/search/docs/fundamentals/ai-optimization-guide)
+- [Search Essentials — Google Search Central](https://developers.google.com/search/docs/essentials)

@@ -7,162 +7,62 @@ tier: "pro"
 estimatedMinutes: 35
 paths: ["ecommerce","startups"]
 resources:
-  - title: "Wikipedia: Growth hacking"
-    url: "https://en.wikipedia.org/wiki/Growth_hacking"
-  - title: "Marketing frameworks, modelos y ejemplos (AMA)"
-    url: "https://www.ama.org/marketing-news/ultimate-guide-to-marketing-frameworks-models-examples-and-step-by-step-applications/"
+  - title: "Dave McClure: Startup Metrics for Pirates"
+    url: "https://www.youtube.com/watch?v=VTeaAlinX9E"
+  - title: "Product Marketing Alliance: AARRR model"
+    url: "https://www.productmarketingalliance.com/content/files/2025/10/AARRR-model-framework.pdf"
 ---
 
-## Definición base
+## Definición
 
-### Definición
-Framework de 5 etapas de crecimiento: Acquisition (conseguir users), Activation (first success), Retention (vuelven), Referral (traen amigos), Revenue (generan dinero). AARRR mide salud de crecimiento en cada etapa.
+AARRR organiza el crecimiento en Acquisition, Activation, Retention, Referral y Revenue: adquisición, activación, retención, recomendación e ingresos. Es una herramienta para localizar fricción y no una receta para crecer.
 
-### Propósito Principal
-Identificar dónde el funnel tiene más fricción. Optimizar cada etapa. Escalar crecimiento sistemáticamente.
+## Propósito
 
-### Pilares Principales
-1. **Acquisition**: CAC, CAC payback, tráfico
-2. **Activation**: Time to first value, onboarding
-3. **Retention**: 30-day retention, churn rate
-4. **Referral**: Viral coefficient, NPS
-5. **Revenue**: ARPU, LTV, LTV:CAC ratio
+Relacionar adquisición con valor real, identificar el paso que limita el sistema y priorizar experimentos con cohortes.
 
-### Aplicación Práctica
-- Acquisition: Focus on CAC &lt;$100
-- Activation: Reduce time to first value &lt;10 min
-- Retention: Target >40% month 3 retention
-- Referral: Build viral loops, NPS >50
-- Revenue: Target LTV:CAC >3:1
+## Cuándo usarlo
 
-### ROI Típico
-+50% growth hacking velocity
----
+- En productos digitales, suscripciones, marketplaces o servicios con eventos medibles.
+- Cuando el crecimiento se evalúa solo por altas o tráfico.
+- Para analizar dónde se pierde valor entre primera visita, uso y pago.
 
----
+## Pasos
 
-## Desarrollo desde fuentes locales
+1. Define el evento y la ventana de cada etapa con lenguaje observable.
+2. Instrumenta eventos, consentimiento, cohortes y calidad de datos antes de comparar.
+3. Mide la progresión por canal, segmento, producto y fecha de alta.
+4. Formula un experimento para el mayor cuello de botella, con guardas de calidad y coste.
+5. Revisa retención, margen y satisfacción antes de escalar adquisición o referidos.
 
-### Fuente: MEO-51-KPIS-DETALLADO
+## KPIs
 
-**DEFINICIÓN**: Acquisition → Activation → Retention → Referral → Revenue
+- Acquisition: usuarios o leads cualificados y coste por adquisición.
+- Activation: tiempo hasta el primer valor y porcentaje que completa el evento clave.
+- Retention: uso repetido, renovación, churn y retención por cohorte.
+- Referral: invitaciones, recomendaciones aceptadas y proporción de nuevos usuarios referidos.
+- Revenue: margen, ingreso por cuenta, conversión de pago y periodo de recuperación.
 
-**INTEGRACIÓN MEO**:
-- Acquisition: SEO, SEM, SMO
-- Activation: UXO, onboarding
-- Retention: Email, CRM
-- Referral: Viral loops, NPS
-- Revenue: CRO, upsell
+## Límites
 
-**APLICACIÓN**: Optimize each stage separately, then collectively
+- No hay objetivos universales como LTV:CAC 3:1, retención del 40% o CAC inferior a una cifra fija.
+- LTV, CAC y coeficiente viral dependen de definiciones, ventanas y atribución.
+- Más usuarios o referidos pueden empeorar calidad, soporte, privacidad o margen.
+- No llames “growth hacking” a una táctica sin hipótesis, experimento y aprendizaje.
 
-**KPIS**:
-- CAC (Acquisition)
-- Time to first action (Activation)
-- 30-day retention rate
-- Viral coefficient
-- LTV:CAC ratio
+## Conexiones
 
-**ROI**: +50% growth hacking velocity
+- **RACE/AIDA:** ofrece otra vista del recorrido de adquisición y relación.
+- **UXO:** trabaja activación y primera experiencia.
+- **CRM:** sostiene retención y comunicación con consentimiento.
+- **AIO:** puede asistir segmentación o predicción, con supervisión y evaluación.
 
----
+## Fuentes
 
----
+- [American Marketing Association: frameworks de marketing](https://www.ama.org/marketing-news/ultimate-guide-to-marketing-frameworks-models-examples-and-step-by-step-applications/)
 
-### Fuente: MEO-51-FRAMEWORKS-COMPLETO
+## Preguntas de comprobación
 
-**Creación**: 2007 | **ROI**: +50% growth | **Componentes**: 5
-
-**Integración MEO Completa**:
-- **Acquisition**: SEO + SEM + SMO + Organic
-- **Activation**: UXO + Onboarding + First Value
-- **Retention**: Email Marketing + CRM + Loyalty Programs
-- **Referral**: NPS + Viral Loops + Incentive Programs
-- **Revenue**: CRO + Pricing Optimization + Upsell Sequences
-
----
-
----
-
-### Fuente: 15-FRAMEWORKS-INTEGRADOS
-
-**Año Creación**: 2007, Dave McClure
-**Componentes**: Acquisition → Activation → Retention → Referral → Revenue
-
-**Integración en MEO**:
-- **Acquisition**: SEO, SEM, SMO (getting first traffic)
-- **Activation**: UXO, SXO (first positive experience, onboarding)
-- **Retention**: Customer Retention Optimization (email, CRM, loyalty)
-- **Referral**: Viral loops, incentive programs, NPS tracking
-- **Revenue**: CRO (conversion), pricing optimization, upsell sequences
-
-**Métrica de ROI**: +50% growth hacking velocity, +45% funnel optimization
-**KPI Specific**:
-- Acquisition: CAC (Cost Per Acquisition) &lt;$50
-- Activation: Time to first action &lt;5 minutes
-- Retention: Month 3 retention >40%
-- Referral: NPS >50, viral coefficient >1.2
-- Revenue: LTV:CAC ratio >3:1
-
-**Herramientas**: GA4 (lifecycle events), Mixpanel (funnel analytics), Amplitude (cohort retention)
-
----
-
----
-
-## Guía operativa MEO
-
-Este bloque convierte la informacion local anterior en una secuencia accionable para la plataforma.
-
-### Propósito dentro del sistema
-
-AARRR Framework (Pirate Metrics) funciona como modulo de diagnostico, posicionamiento, planificacion y alineacion del equipo. En MEO no debe quedar como concepto aislado: debe conectarse con adquisicion, experiencia, datos y optimizacion continua.
-
-### Aplicación práctica
-
-1. Definir objetivo principal del framework y el resultado de negocio esperado.
-2. Levantar baseline: estado actual, canales implicados, activos disponibles y brechas.
-3. Mapear dependencias MEO: frameworks previos, datos necesarios, herramientas y responsables.
-4. Ejecutar un sprint inicial de 2 a 4 semanas con entregables visibles.
-5. Medir avance con KPIs semanales y documentar aprendizajes.
-6. Integrar lo que funcione a la ruta ecommerce, startups y escalarlo como proceso repetible.
-
-### KPIs sugeridos
-
-- Impacto principal: mejora porcentual contra baseline del objetivo definido.
-- Velocidad de implementacion: dias desde diagnostico hasta primera ejecucion medible.
-- Calidad del activo: completitud, consistencia y cumplimiento del checklist MEO.
-- Contribucion al funnel: trafico, engagement, conversion, retencion o eficiencia segun el caso.
-- Sinergia: numero de frameworks MEO conectados con datos, contenido o automatizacion.
-
-### Entregables minimos
-
-- Diagnostico inicial y matriz de oportunidades.
-- Checklist de implementacion por canal o activo.
-- Dashboard simple con baseline, meta, avance y proximo experimento.
-- Retro semanal con aprendizajes, bloqueos y siguiente iteracion.
-
-
----
-
-## Quiz
-
-1. Cual es el objetivo principal de AARRR Framework (Pirate Metrics) dentro del sistema MEO?
-2. Que dos KPIs usarias para saber si este framework esta generando impacto real?
-3. Con que otro framework MEO lo combinarias primero y por que?
-
-
----
-
-## Atribución y marcas
-
-Este módulo resume con fines educativos el modelo «AARRR (Pirate Metrics)», atribuido a Dave McClure (2007). Los nombres y marcas citados pertenecen a sus respectivos titulares; MEO no tiene afiliación ni respaldo de ellos. Para la definición original consulta la obra de sus autores.
-
----
-
-## Fuentes locales usadas
-
-- 116-FRAMEWORKS-DEFINICIONES
-- MEO-51-KPIS-DETALLADO
-- MEO-51-FRAMEWORKS-COMPLETO
-- 15-FRAMEWORKS-INTEGRADOS
+1. ¿Qué evento define activación para este producto?
+2. ¿Qué cohorte compararías antes y después de un cambio?
+3. ¿Qué guardas impedirían escalar una adquisición de baja calidad?

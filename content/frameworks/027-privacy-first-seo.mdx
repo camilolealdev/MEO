@@ -7,124 +7,43 @@ tier: "pro"
 estimatedMinutes: 40
 paths: ["seo-total"]
 resources:
-  - title: "Google Ads policies"
-    url: "https://support.google.com/google-ads/answer/1361344"
-  - title: "Wikipedia: Consent management"
-    url: "https://en.wikipedia.org/wiki/Consent_management"
+  - title: "ICO: cookies y tecnologías similares"
+    url: "https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/"
+  - title: "Google Privacy Sandbox: cookies"
+    url: "https://privacysandbox.google.com/cookies/basics/cookie-blocking"
 ---
 
-## Definición base
+## Definición
+Privacy-First SEO diseña adquisición, medición y personalización con el mínimo de datos necesario, consentimiento válido y alternativas cuando el navegador o el usuario bloquean tecnologías de seguimiento.
 
-### Definición
-**Corrección importante 2026**: la premisa original de este framework —"prepararse para un futuro sin third-party cookies en Chrome"— quedó desactualizada. Google revirtió su plan de eliminación de cookies (anuncio de julio 2024) y en abril 2025 descartó incluso su plan alternativo de "choice prompt"; en octubre 2025 cerró definitivamente Privacy Sandbox (10 APIs retiradas). Chrome no bloquea third-party cookies por defecto en 2026. Sin embargo, el framework sigue siendo válido por otras razones: Safari y Firefox sí bloquean cross-site tracking por defecto, GDPR/ePrivacy y CCPA no cambiaron, y la data de first-party sigue siendo el activo más valioso y resiliente independientemente de lo que haga cada navegador.
+## Propósito
+Mantener medición útil y relaciones directas sin depender de perfiles opacos ni de una fecha única de eliminación de cookies.
 
-### Propósito Principal
-Compliance regulatorio (GDPR, CCPA) y resiliencia de datos independiente de las decisiones cambiantes de cada navegador — no una carrera contra una fecha límite de cookies que, de momento, no llegó.
+## Cuándo usarlo
+- Cuando recoges datos de analítica, publicidad, formularios o personalización.
+- Cuando operas en jurisdicciones con obligaciones distintas.
 
-### Pilares Principales
-1. **First-Party Data**: Recolección agresiva de email, preferences (sigue siendo el pilar de mayor ROI)
-2. **Cookie Consent**: Transparent policies, respetar preferencias del usuario (obligatorio bajo GDPR/CCPA con independencia de Chrome)
-3. **Server-Side Tracking**: GA4 + GTM server-side, útil también para navegadores que sí bloquean cookies (Safari, Firefox)
-4. **Cross-Browser Reality Check**: Diseñar targeting asumiendo que el comportamiento de cookies difiere por navegador (Chrome las permite, Safari/Firefox las bloquean), no un escenario único "post-cookie"
+## Pasos
+1. Inventaría datos, finalidades, proveedores, retención y transferencias.
+2. Define base legal y separa consentimiento de información general.
+3. Bloquea tecnologías no esenciales hasta obtener una señal válida cuando corresponda.
+4. Prioriza datos propios declarados, contexto y analítica agregada.
+5. Documenta pérdida de señal, modelado y límites de atribución.
+6. Revisa permisos, contratos y cambios regulatorios con asesoría especializada.
 
-### ROI Típico
-+25% sustainable traffic/data quality, principalmente por compliance y resiliencia cross-browser, no por una eliminación de cookies que no ocurrió en Chrome
----
+## KPIs
+- Consentimiento por finalidad y país.
+- Cobertura de medición con y sin consentimiento.
+- Calidad de datos propios.
+- Solicitudes de acceso, borrado y oposición resueltas.
+- Incidentes y etiquetas no autorizadas.
 
----
+## Límites
+Las obligaciones dependen de jurisdicción y finalidad. La guía del ICO exige consentimiento claro para cookies no esenciales usadas en seguimiento; no es asesoría legal universal. Los navegadores aplican políticas distintas.
 
-## Desarrollo desde fuentes locales
+## Conexiones
+Conecta con Data & Analytics (#42), CDP (#114), consentimiento, CRO (#24) y gobernanza.
 
-### Fuente: MEO-2025-Sistema-Completo
-
-**Definición y Propósito**
-Estrategias SEO y marketing preparadas para futuro sin third-party cookies, compliance con regulaciones (GDPR, CCPA, etc.), y focus en first-party data collection. **Corrección 2026**: Google canceló la deprecación de cookies de terceros en Chrome (revertida julio 2024, Privacy Sandbox cerrado octubre 2025); el foco pasa a ser compliance regulatorio y realidad cross-browser (Safari/Firefox sí bloquean), no una fecha límite de cookies.
-
-**Técnicas Avanzadas 2025**
-
-- **First-Party Data Strategy**: Recolección agresiva de first-party data (email, preference center, CRM integration).
-
-- **Cookie Consent Management**: Transparent cookie policies, consent management platforms, respeto a user preferences.
-
-- **Privacy-Centric Targeting**: Targeting based on first-party data, behavioral signals, contextual relevance vs historical tracking.
-
-- **Server-Side Tracking**: Implementation de GA4 + enhanced conversions, server-side GTM for accuracy sin reliance en client-side cookies.
-
-**Métricas Clave**
-- % first-party data collected
-- Email list growth
-- Conversion accuracy cross-browser (Chrome/Safari/Firefox)
-- GDPR/CCPA compliance rate
-
-**Herramientas**
-- Google Tag Manager (server-side)
-- OneTrust (consent management)
-- Segment/mParticle (CDP)
-- GA4 (privacy-friendly analytics)
-
----
-
-### Fuente: MEO-51-FRAMEWORKS-COMPLETO
-
-**ROI**: +25% sustainable traffic/data quality (compliance y cross-browser, no eliminación de cookies) | **Complejidad**: Avanzada
-
-**Nota 2026**: Google revirtió el plan de eliminar cookies de terceros en Chrome (julio 2024) y cerró Privacy Sandbox (octubre 2025) — Chrome NO bloquea cookies de terceros por defecto. Safari y Firefox sí las bloquean. El enfoque ya no es "mundo post-cookies" sino cumplimiento GDPR/CCPA + estrategia first-party robusta independiente del navegador.
-
-**Técnicas**:
-- First-Party Data Strategy
-- Server-Side Tracking
-- Privacy-Centric Targeting (GDPR/CCPA compliance)
-
----
-
----
-
-## Guía operativa MEO
-
-Este bloque convierte la informacion local anterior en una secuencia accionable para la plataforma.
-
-### Propósito dentro del sistema
-
-Privacy-First SEO funciona como modulo de visibilidad, citabilidad, autoridad y trafico cualificado. En MEO no debe quedar como concepto aislado: debe conectarse con adquisicion, experiencia, datos y optimizacion continua.
-
-### Aplicación práctica
-
-1. Definir objetivo principal del framework y el resultado de negocio esperado.
-2. Levantar baseline: estado actual, canales implicados, activos disponibles y brechas.
-3. Mapear dependencias MEO: frameworks previos, datos necesarios, herramientas y responsables.
-4. Ejecutar un sprint inicial de 2 a 4 semanas con entregables visibles.
-5. Medir avance con KPIs semanales y documentar aprendizajes.
-6. Integrar lo que funcione a la ruta seo-total y escalarlo como proceso repetible.
-
-### KPIs sugeridos
-
-- Impacto principal: mejora porcentual contra baseline del objetivo definido.
-- Velocidad de implementacion: dias desde diagnostico hasta primera ejecucion medible.
-- Calidad del activo: completitud, consistencia y cumplimiento del checklist MEO.
-- Contribucion al funnel: trafico, engagement, conversion, retencion o eficiencia segun el caso.
-- Sinergia: numero de frameworks MEO conectados con datos, contenido o automatizacion.
-
-### Entregables minimos
-
-- Diagnostico inicial y matriz de oportunidades.
-- Checklist de implementacion por canal o activo.
-- Dashboard simple con baseline, meta, avance y proximo experimento.
-- Retro semanal con aprendizajes, bloqueos y siguiente iteracion.
-
-
----
-
-## Quiz
-
-1. Cual es el objetivo principal de Privacy-First SEO dentro del sistema MEO?
-2. Que dos KPIs usarias para saber si este framework esta generando impacto real?
-3. Con que otro framework MEO lo combinarias primero y por que?
-
-
----
-
-## Fuentes locales usadas
-
-- 116-FRAMEWORKS-DEFINICIONES
-- MEO-2025-Sistema-Completo
-- MEO-51-FRAMEWORKS-COMPLETO
+## Fuentes
+- [ICO: cookies y tecnologías similares](https://ico.org.uk/for-organisations/direct-marketing-and-privacy-and-electronic-communications/guide-to-pecr/cookies-and-similar-technologies/)
+- [Google Privacy Sandbox: bloqueo de cookies](https://privacysandbox.google.com/cookies/basics/cookie-blocking)
