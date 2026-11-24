@@ -22,6 +22,10 @@ export interface FrameworkMeta {
   paths: string[];
   readingTime: string;
   resources: FrameworkResource[];
+  evidenceLevel: "high" | "medium" | "low";
+  sourceCount: number;
+  primarySourceCount: number;
+  lastUpdated: string | null;
 }
 
 export interface FrameworkFull extends FrameworkMeta {
@@ -49,7 +53,10 @@ const VALID_TIERS = new Set(["free", "pro", "agency"]);
 function validateFrameworkMeta(
   data: Record<string, unknown>,
   file: string
-): Omit<FrameworkMeta, "readingTime"> | null {
+): Omit<
+  FrameworkMeta,
+  "readingTime" | "evidenceLevel" | "sourceCount" | "primarySourceCount" | "lastUpdated"
+> | null {
   const { title, number, slug, category, tier, estimatedMinutes, paths, resources } = data;
 
   if (typeof slug !== "string" || slug.length === 0) {
@@ -82,6 +89,67 @@ function validateFrameworkMeta(
   };
 }
 
+const PRIMARY_SOURCE_HOSTS = new Set([
+  "developers.google.com",
+  "support.google.com",
+  "www.w3.org",
+  "www.nist.gov",
+  "nvlpubs.nist.gov",
+  "c2pa.org",
+  "spec.c2pa.org",
+  "ico.org.uk",
+  "eur-lex.europa.eu",
+  "digital-strategy.ec.europa.eu",
+  "learn.microsoft.com",
+  "www.iso.org",
+]);
+
+function isValidDate(value: unknown): value is string {
+  if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}(?:T.*)?$/.test(value)) {
+    return false;
+  }
+  return !Number.isNaN(Date.parse(value));
+}
+
+function deriveEvidence(resources: FrameworkResource[]) {
+  const validResources = resources.filter((resource) => {
+    try {
+      const url = new URL(resource.url);
+      return url.protocol === "https:";
+    } catch {
+      return false;
+    }
+  });
+  const primarySourceCount = validResources.filter((resource) => {
+    const hostname = new URL(resource.url).hostname.toLowerCase();
+    return (
+      PRIMARY_SOURCE_HOSTS.has(hostname) ||
+      hostname.endsWith(".gov") ||
+      hostname.endsWith(".gov.uk") ||
+      hostname.endsWith(".gov.co") ||
+      hostname.endsWith(".edu")
+    );
+  }).length;
+
+  return {
+    sourceCount: validResources.length,
+    primarySourceCount,
+    evidenceLevel:
+      validResources.length >= 2 && primarySourceCount >= 1
+        ? ("high" as const)
+        : validResources.length >= 1
+          ? ("medium" as const)
+          : ("low" as const),
+  };
+}
+
+function getLastUpdated(data: Record<string, unknown>): string | null {
+  for (const key of ["updatedAt", "lastUpdated", "reviewedAt"]) {
+    if (isValidDate(data[key])) return data[key];
+  }
+  return null;
+}
+
 function loadFrameworks(): FrameworkFull[] {
   if (frameworksCache) return frameworksCache;
 
@@ -102,7 +170,14 @@ function loadFrameworks(): FrameworkFull[] {
       const { data, content } = matter(raw);
       const meta = validateFrameworkMeta(data as Record<string, unknown>, file);
       if (!meta) continue;
-      result.push({ ...meta, readingTime: readingTime(content).text, content });
+      const evidence = deriveEvidence(meta.resources);
+      result.push({
+        ...meta,
+        ...evidence,
+        lastUpdated: getLastUpdated(data as Record<string, unknown>),
+        readingTime: readingTime(content).text,
+        content,
+      });
     } catch (e) {
       console.error(`content: error procesando ${file} — omitido:`, e);
     }
@@ -127,6 +202,10 @@ export function getAllFrameworks(): FrameworkMeta[] {
     paths: fw.paths,
     readingTime: fw.readingTime,
     resources: fw.resources,
+    evidenceLevel: fw.evidenceLevel,
+    sourceCount: fw.sourceCount,
+    primarySourceCount: fw.primarySourceCount,
+    lastUpdated: fw.lastUpdated,
   }));
 }
 
