@@ -95,6 +95,53 @@
 }
 
 @layer components {
+  /* Base visual explícita para el contenido MDX; no depende del plugin typography. */
+  .fw-article {
+    color: #374151;
+    font-size: 1.0625rem;
+    line-height: 1.75;
+  }
+  .fw-article > h1,
+  .fw-article > h2,
+  .fw-article > h3,
+  .fw-article > h4 {
+    scroll-margin-top: 6rem;
+  }
+  .fw-article > h2 {
+    border-bottom: 1px solid var(--fw-acc-border, #e5e7eb);
+    color: #111827;
+    font-family: var(--font-display), sans-serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.3;
+    margin: 2.75rem 0 1rem;
+    padding-bottom: 0.65rem;
+  }
+  .fw-article > h3 {
+    border-left: 3px solid var(--fw-acc, #6d28d9);
+    color: #111827;
+    font-family: var(--font-display), sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    line-height: 1.4;
+    margin: 2rem 0 0.65rem;
+    padding-left: 0.75rem;
+  }
+  .fw-article > p { margin: 0 0 1rem; }
+  .fw-article > ul,
+  .fw-article > ol { margin: 0 0 1.25rem; padding-left: 1.5rem; }
+  .fw-article > ul { list-style: disc; }
+  .fw-article > ol { list-style: decimal; }
+  .fw-article > li { margin: 0.35rem 0; }
+  .fw-article > blockquote {
+    background: var(--fw-acc-soft, #f5f3ff);
+    border-left: 4px solid var(--fw-acc, #6d28d9);
+    border-radius: 0 0.75rem 0.75rem 0;
+    margin: 1.5rem 0;
+    padding: 0.8rem 1rem;
+  }
+  .fw-article > hr { border: 0; border-top: 1px solid #e5e7eb; margin: 2rem 0; }
+
   /* Párrafo que es solo texto en negrita (patrón **TÍTULO** de los MDX):
      se trata como subtítulo interno con el acento de la categoría. */
   .fw-body p > strong:first-child:last-child {

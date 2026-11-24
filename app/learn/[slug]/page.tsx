@@ -13,7 +13,7 @@ import { FwResources } from "@/components/ui/FwResources";
 import { getAccent, accentVars } from "@/lib/fw-theme";
 import type { CSSProperties } from "react";
 import { MDXRemote } from "next-mdx-remote-client/rsc";
-import { Clock, Hash, Lock } from "lucide-react";
+import { Clock, Download, Hash, Lock, ShieldCheck } from "lucide-react";
 import { hasAccess, TIER_LABELS, type Tier } from "@/lib/tiers";
 import type { Metadata } from "next";
 
@@ -109,6 +109,12 @@ const mdxComponents = {
   ),
 };
 
+const EVIDENCE_LABELS = {
+  high: "Alta",
+  medium: "Media",
+  low: "Baja",
+} as const;
+
 export default async function FrameworkPage({ params }: Props) {
   const { slug } = await params;
   const session = await auth();
@@ -146,10 +152,11 @@ export default async function FrameworkPage({ params }: Props) {
       <div className="max-w-3xl mx-auto px-6 py-12">
         {canRead ? (
           <article
-            className="prose prose-base max-w-prose fw-body"
+            className="fw-article max-w-prose fw-body"
             style={accentVars(accent) as CSSProperties}
           >
-            <div className="mb-8 flex flex-wrap items-center gap-3 text-xs text-gray-600 rounded-xl px-4 py-3 border fw-acc-border fw-acc-bg">
+            <div className="mb-8 rounded-2xl border fw-acc-border fw-acc-bg p-5 shadow-sm">
+              <div className="flex flex-wrap items-center gap-3 text-xs text-gray-600">
               <span className="flex items-center gap-1.5">
                 <span className="font-mono fw-acc-text">#{String(fw.number).padStart(2, "0")}</span>
                 <span className="text-gray-600">{fw.title}</span>
@@ -160,6 +167,30 @@ export default async function FrameworkPage({ params }: Props) {
               <span className="flex items-center gap-1">
                 <Clock className="w-3.5 h-3.5" />{fw.estimatedMinutes} min lectura
               </span>
+              </div>
+              <div className="mt-4 grid gap-3 border-t border-white/80 pt-4 sm:grid-cols-3">
+                <div className="flex items-start gap-2">
+                  <ShieldCheck className="mt-0.5 h-4 w-4 fw-acc-text" aria-hidden />
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Evidencia</p>
+                    <p className="text-sm font-semibold text-gray-900">{EVIDENCE_LABELS[fw.evidenceLevel]}</p>
+                    <p className="text-xs text-gray-500">{fw.sourceCount} fuente{fw.sourceCount === 1 ? "" : "s"} válida{fw.sourceCount === 1 ? "" : "s"} · {fw.primarySourceCount} primaria{fw.primarySourceCount === 1 ? "" : "s"}</p>
+                  </div>
+                </div>
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Última revisión</p>
+                  <p className="text-sm font-semibold text-gray-900">{fw.lastUpdated ?? "No declarada"}</p>
+                  <p className="text-xs text-gray-500">No se inventa una fecha si el contenido no la declara.</p>
+                </div>
+                <a
+                  href={`/api/frameworks/${fw.slug}/template`}
+                  className="inline-flex h-fit items-center justify-center gap-2 rounded-lg bg-gray-950 px-3 py-2 text-xs font-semibold text-white transition hover:bg-gray-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-gray-950"
+                  download
+                >
+                  <Download className="h-3.5 w-3.5" aria-hidden />
+                  Descargar plantilla
+                </a>
+              </div>
             </div>
             <MDXRemote
               source={fw.content}
