@@ -1,20 +1,27 @@
--- Gap analysis P1: idempotencia de webhooks, provider, updatedAt, índices en FKs,
+-- Gap analysis P1: idempotencia de webhooks, provider, updatedAt, �ndices en FKs,
 -- unique en path_enrollments. Todas las operaciones son ADITIVAS y no destructivas.
 
 -- updatedAt
 ALTER TABLE "users" ADD COLUMN IF NOT EXISTS "updated_at" timestamp NOT NULL DEFAULT now();
+--> statement-breakpoint
 ALTER TABLE "subscriptions" ADD COLUMN IF NOT EXISTS "updated_at" timestamp NOT NULL DEFAULT now();
+--> statement-breakpoint
 
 -- provider en subscriptions (default 'stripe' para filas existentes)
 ALTER TABLE "subscriptions" ADD COLUMN IF NOT EXISTS "provider" text NOT NULL DEFAULT 'stripe';
+--> statement-breakpoint
 
--- índices en claves foráneas
+-- �ndices en claves for�neas
 CREATE INDEX IF NOT EXISTS "accounts_user_id_idx" ON "accounts" ("user_id");
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "sessions_user_id_idx" ON "sessions" ("user_id");
+--> statement-breakpoint
 CREATE INDEX IF NOT EXISTS "subscriptions_user_id_idx" ON "subscriptions" ("user_id");
+--> statement-breakpoint
 
 -- unique en inscripciones a rutas (evita duplicados por usuario+ruta)
 CREATE UNIQUE INDEX IF NOT EXISTS "path_enrollments_user_path_idx" ON "path_enrollments" ("user_id", "path_slug");
+--> statement-breakpoint
 
 -- tabla de idempotencia de webhooks
 CREATE TABLE IF NOT EXISTS "webhook_events" (
@@ -23,4 +30,5 @@ CREATE TABLE IF NOT EXISTS "webhook_events" (
   "event_id" text NOT NULL,
   "received_at" timestamp NOT NULL DEFAULT now()
 );
+--> statement-breakpoint
 CREATE UNIQUE INDEX IF NOT EXISTS "webhook_events_provider_event_idx" ON "webhook_events" ("provider", "event_id");

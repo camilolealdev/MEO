@@ -11,6 +11,7 @@ CREATE TABLE IF NOT EXISTS "users" (
   "role" text NOT NULL DEFAULT 'user',
   "created_at" timestamp NOT NULL DEFAULT now()
 );
+--> statement-breakpoint
 
 CREATE TABLE IF NOT EXISTS "accounts" (
   "user_id" text NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
@@ -26,12 +27,14 @@ CREATE TABLE IF NOT EXISTS "accounts" (
   "session_state" text,
   PRIMARY KEY ("provider", "provider_account_id")
 );
+--> statement-breakpoint
 
 CREATE TABLE IF NOT EXISTS "sessions" (
   "session_token" text PRIMARY KEY NOT NULL,
   "user_id" text NOT NULL REFERENCES "users"("id") ON DELETE CASCADE,
   "expires" timestamp NOT NULL
 );
+--> statement-breakpoint
 
 CREATE TABLE IF NOT EXISTS "verification_tokens" (
   "identifier" text NOT NULL,
@@ -39,6 +42,7 @@ CREATE TABLE IF NOT EXISTS "verification_tokens" (
   "expires" timestamp NOT NULL,
   PRIMARY KEY ("identifier", "token")
 );
+--> statement-breakpoint
 
 CREATE TABLE IF NOT EXISTS "subscriptions" (
   "id" text PRIMARY KEY NOT NULL,
@@ -50,6 +54,7 @@ CREATE TABLE IF NOT EXISTS "subscriptions" (
   "current_period_end" timestamp NOT NULL,
   "created_at" timestamp NOT NULL DEFAULT now()
 );
+--> statement-breakpoint
 
 CREATE TABLE IF NOT EXISTS "progress" (
   "id" text PRIMARY KEY NOT NULL,
@@ -58,6 +63,7 @@ CREATE TABLE IF NOT EXISTS "progress" (
   "completed_at" timestamp NOT NULL DEFAULT now(),
   "time_spent_seconds" integer NOT NULL DEFAULT 0
 );
+--> statement-breakpoint
 
 CREATE TABLE IF NOT EXISTS "path_enrollments" (
   "id" text PRIMARY KEY NOT NULL,

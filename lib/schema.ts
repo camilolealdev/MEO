@@ -1,4 +1,4 @@
-import { pgTable, text, timestamp, integer, primaryKey, uniqueIndex, index } from "drizzle-orm/pg-core";
+import { pgTable, text, timestamp, integer, primaryKey, uniqueIndex, index, jsonb } from "drizzle-orm/pg-core";
 
 export const users = pgTable("users", {
   id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
@@ -60,7 +60,7 @@ export const subscriptions = pgTable(
   {
     id: text("id").primaryKey().$defaultFn(() => crypto.randomUUID()),
     userId: text("user_id").notNull().references(() => users.id, { onDelete: "cascade" }),
-    // Proveedor de la suscripción. `providerSubscriptionId` es el ID nativo
+    // Proveedor de la suscripci�n. `providerSubscriptionId` es el ID nativo
     // (Stripe subscription / MP preapproval / PayPal subscription). Se mantiene
     // la columna legacy `stripe_subscription_id` como fuente del ID.
     provider: text("provider").$type<"stripe" | "mercadopago" | "paypal">().notNull().default("stripe"),
@@ -68,7 +68,7 @@ export const subscriptions = pgTable(
     stripePriceId: text("stripe_price_id").notNull(),
     status: text("status").notNull(),
     tier: text("tier").$type<"pro" | "agency">().notNull(),
-    currentPeriodEnd: timestamp("current_period_end").notNull(),
+    currentPeriodEnd: timestamp("current_period_end"),
     createdAt: timestamp("created_at").notNull().defaultNow(),
     updatedAt: timestamp("updated_at").notNull().defaultNow().$onUpdate(() => new Date()),
   },
@@ -95,9 +95,7 @@ export const pathEnrollments = pgTable(
   (t) => [uniqueIndex("path_enrollments_user_path_idx").on(t.userId, t.pathSlug)]
 );
 
-// Idempotencia de webhooks: cada evento entrante se registra una sola vez.
-// Un INSERT con conflicto sobre (provider, event_id) indica un duplicado y el
-// handler debe omitir el reprocesamiento.
+// Los webhooks hist�ricos pueden existir sin marca de procesamiento.
 export const webhookEvents = pgTable(
   "webhook_events",
   {
@@ -105,9 +103,16 @@ export const webhookEvents = pgTable(
     provider: text("provider").notNull(),
     eventId: text("event_id").notNull(),
     receivedAt: timestamp("received_at").notNull().defaultNow(),
+    processedAt: timestamp("processed_at"),
   },
   (t) => [uniqueIndex("webhook_events_provider_event_idx").on(t.provider, t.eventId)]
 );
+
+export const diagnosticRoutes = pgTable("diagnostic_routes", {
+  userId: text("user_id").primaryKey().references(() => users.id, { onDelete: "cascade" }),
+  frameworkSlugs: jsonb("framework_slugs").$type<string[]>().notNull(),
+  answers: jsonb("answers").$type<Record<string, string>>().notNull(),
+});
 
 export type User = typeof users.$inferSelect;
 export type Subscription = typeof subscriptions.$inferSelect;

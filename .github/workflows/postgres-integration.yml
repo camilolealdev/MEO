@@ -1,0 +1,67 @@
+name: PostgreSQL integration tests
+
+on:
+  push:
+    branches: [ci/postgres-integration-20261125]
+
+permissions:
+  contents: read
+
+jobs:
+  migrations:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: meo
+          POSTGRES_PASSWORD: meo
+          POSTGRES_DB: meo_empty
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U meo -d meo_empty"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    env:
+      MIGRATION_DATABASE_URL: postgresql://meo:meo@localhost:5432/meo_empty
+      LEGACY_DATABASE_URL: postgresql://meo:meo@localhost:5432/meo_legacy
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+          cache: npm
+      - run: npm ci
+      - name: Instalar cliente TCP para PostgreSQL local
+        run: npm install --no-save --package-lock=false --ignore-scripts pg@8.16.3
+      - name: Migrar base vac�a y comprobar que repetir es seguro
+        run: |
+          npm run db:migrate
+          npm run db:migrate
+      - name: Migrar copia con el esquema previo y conservar filas
+        run: |
+          psql "$MIGRATION_DATABASE_URL" -v ON_ERROR_STOP=1 -c 'CREATE DATABASE meo_legacy'
+          for migration in drizzle/000[0-3]_*.sql; do
+            psql "$LEGACY_DATABASE_URL" -v ON_ERROR_STOP=1 -f "$migration"
+          done
+          psql "$LEGACY_DATABASE_URL" -v ON_ERROR_STOP=1 <<'SQL'
+          INSERT INTO users (id, email) VALUES ('legacy', 'legacy@example.org');
+          INSERT INTO webhook_events (id, provider, event_id) VALUES ('old', 'stripe', 'old-event');
+          SQL
+          MIGRATION_DATABASE_URL="$LEGACY_DATABASE_URL" npm run db:migrate
+          psql "$LEGACY_DATABASE_URL" -v ON_ERROR_STOP=1 <<'SQL'
+          DO $$
+          BEGIN
+            IF NOT EXISTS (SELECT 1 FROM users WHERE id = 'legacy') OR
+               NOT EXISTS (SELECT 1 FROM webhook_events WHERE id = 'old' AND processed_at IS NULL) OR
+               to_regclass('public.diagnostic_routes') IS NULL THEN
+              RAISE EXCEPTION 'La migraci�n no conserv� las filas o falta una tabla';
+            END IF;
+          END $$;
+          SQL
+      - name: Comprobar transacciones y reintentos de pagos
+        env:
+          BILLING_TEST_DATABASE_URL: postgresql://meo:meo@localhost:5432/meo_empty
+        run: npm test -- tests/billing-storage.test.ts

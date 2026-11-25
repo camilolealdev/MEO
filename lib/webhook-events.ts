@@ -1,32 +1,77 @@
-import { db } from "./db";
-import { webhookEvents } from "./schema";
+import { Pool, neonConfig } from "@neondatabase/serverless";
+import { drizzle } from "drizzle-orm/neon-serverless";
+import { and, eq, isNull, or, sql } from "drizzle-orm";
+import { subscriptions, users, webhookEvents, type Subscription } from "./schema";
 
-/**
- * Registra un evento de webhook para garantizar idempotencia.
- *
- * @returns `true` si el evento es nuevo y debe procesarse; `false` si ya se
- * había recibido (duplicado → omitir reprocesamiento).
- *
- * Degradación segura: si el registro falla (p.ej. la migración 0003 aún no se
- * aplicó y la tabla no existe), se loggea y se devuelve `true` para no perder
- * eventos legítimos. La idempotencia se activa automáticamente una vez migrada.
- */
-export async function isNewWebhookEvent(
-  provider: string,
-  eventId: string
+type Snapshot = Pick<Subscription, "userId" | "stripePriceId" | "status" | "tier" | "currentPeriodEnd">;
+
+export const accessGrantingSubscription = or(
+  and(eq(subscriptions.provider, "stripe"), or(
+    eq(subscriptions.status, "active"),
+    eq(subscriptions.status, "trialing"),
+    eq(subscriptions.status, "past_due"),
+  )),
+  and(eq(subscriptions.provider, "mercadopago"), eq(subscriptions.status, "authorized")),
+  and(eq(subscriptions.provider, "paypal"), eq(subscriptions.status, "ACTIVE")),
+)!;
+
+function createPaymentDb() {
+  neonConfig.webSocketConstructor = WebSocket;
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL, max: 4, connectionTimeoutMillis: 10_000 });
+  pool.on("error", (error) => console.error("Billing database connection error", error));
+  return drizzle(pool);
+}
+
+let paymentDb: ReturnType<typeof createPaymentDb> | undefined;
+
+export async function syncSubscription(
+  provider: Subscription["provider"],
+  providerId: string,
+  eventId: string | undefined,
+  load: () => Promise<Snapshot>,
 ): Promise<boolean> {
-  if (!eventId) return true; // sin id no se puede deduplicar; procesar
-  try {
-    const inserted = await db
-      .insert(webhookEvents)
-      .values({ provider, eventId })
-      .onConflictDoNothing({
-        target: [webhookEvents.provider, webhookEvents.eventId],
-      })
-      .returning({ id: webhookEvents.id });
-    return inserted.length > 0;
-  } catch (error) {
-    console.error(`isNewWebhookEvent: no se pudo registrar ${provider}:${eventId}`, error);
+  paymentDb ??= createPaymentDb();
+  return paymentDb.transaction(async (tx) => {
+    let claimedId: string | undefined;
+    if (eventId) {
+      // A historical row with no completion marker can safely be processed again.
+      // Claim and completion share a transaction so a provider retry can finish rolled-back work.
+      const claimed = await tx.insert(webhookEvents)
+        .values({ provider, eventId })
+        .onConflictDoUpdate({
+          target: [webhookEvents.provider, webhookEvents.eventId],
+          set: { eventId },
+          setWhere: isNull(webhookEvents.processedAt),
+        })
+        .returning({ id: webhookEvents.id });
+      if (!claimed.length) return false;
+      claimedId = claimed[0].id;
+    }
+
+    // Serialize reads of provider state for the same subscription, including cron reads.
+    await tx.execute(sql`select pg_advisory_xact_lock(hashtextextended(${`${provider}:${providerId}`}, 0))`);
+    const snapshot = await load();
+    const [owner] = await tx.select({ id: users.id, role: users.role }).from(users)
+      .where(eq(users.id, snapshot.userId)).for("update");
+    if (!owner) throw new Error("Subscription owner does not exist");
+
+    const { status, tier, currentPeriodEnd, stripePriceId, userId } = snapshot;
+    const [saved] = await tx.insert(subscriptions).values({ ...snapshot, provider, stripeSubscriptionId: providerId }).onConflictDoUpdate({
+      target: subscriptions.stripeSubscriptionId,
+      set: { status, tier, currentPeriodEnd, stripePriceId },
+      setWhere: and(eq(subscriptions.provider, provider), eq(subscriptions.userId, userId)),
+    }).returning({ id: subscriptions.id });
+    if (!saved) throw new Error("Subscription owner or provider has changed");
+
+    if (owner.role !== "admin") {
+      const active = await tx.select({ tier: subscriptions.tier }).from(subscriptions)
+        .where(and(eq(subscriptions.userId, userId), accessGrantingSubscription));
+      const effectiveTier = active.some((sub) => sub.tier === "agency") ? "agency" : active.length ? "pro" : "free";
+      await tx.update(users).set({ tier: effectiveTier }).where(eq(users.id, userId));
+    }
+    if (claimedId) {
+      await tx.update(webhookEvents).set({ processedAt: new Date() }).where(eq(webhookEvents.id, claimedId));
+    }
     return true;
-  }
+  });
 }
